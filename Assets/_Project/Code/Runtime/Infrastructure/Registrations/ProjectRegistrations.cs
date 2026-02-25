@@ -1,4 +1,5 @@
-﻿using _Project.Code.Runtime.Utility.AssetsManagment;
+﻿using _Project.Code.Runtime.UI.Factories;
+using _Project.Code.Runtime.Utility.AssetsManagment;
 using _Project.Code.Runtime.Utility.ConfigManagment;
 using _Project.Code.Runtime.Utility.ConfigManagment.Loaders;
 using _Project.Code.Runtime.Utility.CoroutineManagment;
@@ -20,8 +21,20 @@ namespace _Project.Code.Runtime.Infrastructure.Registrations
             projectContainer.Register(CreateLoadSceneService).AsSingle();
             projectContainer.Register(CreateConfigsProvider).AsSingle();
             projectContainer.Register(CreateUpdatableService).AsSingle();
+            projectContainer.Register(CreateViewsFactory).AsSingle();
+            projectContainer.Register(CreateProjectPresentersFactory).AsSingle();
 
             projectContainer.Initialize();
+        }
+
+        private static ProjectPresentersFactory CreateProjectPresentersFactory(DIContainer c)
+        {
+            return new ProjectPresentersFactory(c);
+        }
+
+        private static ViewsFactory CreateViewsFactory(DIContainer c)
+        {
+            return new ViewsFactory(c);
         }
 
         private static IUpdatableService CreateUpdatableService(DIContainer c)
