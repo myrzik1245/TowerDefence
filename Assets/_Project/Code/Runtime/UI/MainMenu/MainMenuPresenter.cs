@@ -1,6 +1,7 @@
 ﻿using _Project.Code.Runtime.UI.Core;
 using _Project.Code.Runtime.Utility.CoroutineManagment;
 using _Project.Code.Runtime.Utility.SceneManagment;
+using _Project.Code.Runtime.Utility.SceneManagment.SceneInputArgs;
 using System;
 using System.Collections.Generic;
 
@@ -34,7 +35,8 @@ namespace _Project.Code.Runtime.UI.MainMenu
 
         private void OnPlayButtonClicked()
         {
-            _coroutinePerformer.StartPerform(_loadSceneService.LoadAsync(Scenes.Gameplay));
+            _coroutinePerformer.StartPerform(
+                _loadSceneService.LoadAsync(Scenes.Gameplay, new GameplayInputArgs(0)));
         }
     }
 }

@@ -1,3 +1,6 @@
+using _Project.Code.Runtime.Configs.Characters;
+using _Project.Code.Runtime.Configs.Level;
+using _Project.Code.Runtime.Gameplay.Characters;
 using _Project.Code.Runtime.Utility.AssetsManagment;
 using System;
 using System.Collections;
@@ -11,6 +14,9 @@ namespace _Project.Code.Runtime.Utility.ConfigManagment.Loaders
         private readonly ResourcesAssetsLoader _resourcesAssetsLoader;
         private readonly Dictionary<Type, string> _pathsMap = new Dictionary<Type, string>()
         {
+            { typeof(TowerConfig), "Configs/Characters/Tower/TowerConfig" },
+            { typeof(BomberConfig), "Configs/Characters/Bomber/BomberConfig" },
+            { typeof(LevelsConfig), "Configs/Levels/LevelsConfig" },
         };
 
         public ResourcesConfigLoader(ResourcesAssetsLoader resourcesAssetsLoader)

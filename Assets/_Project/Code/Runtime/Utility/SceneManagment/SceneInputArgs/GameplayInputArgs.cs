@@ -2,8 +2,11 @@
 {
     public class GameplayInputArgs : IInputSceneArgs
     {
-        public GameplayInputArgs()
+        public int Level { get; }
+        
+        public GameplayInputArgs(int level)
         {
+            Level = level;
         }
     }
 }

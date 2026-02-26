@@ -32,7 +32,7 @@ namespace _Project.Code.Runtime.Utility.StateMachineCore
             return this;
         }
 
-        public void Update(float deltaTime)
+        public virtual void Update(float deltaTime)
         {
             if (_isRunning == false)
                 return;

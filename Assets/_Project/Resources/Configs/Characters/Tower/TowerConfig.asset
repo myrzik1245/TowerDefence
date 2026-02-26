@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb7366cff2954be2b98f85e0840f722f, type: 3}
+  m_Name: TowerConfig
+  m_EditorClassIdentifier: 
+  <PrefabPath>k__BackingField: Gameplay/Characters/Tower
+  <HealthConfigData>k__BackingField:
+    <StartHealth>k__BackingField: 10
+    <MaxHealth>k__BackingField: 10
+    <ClampHealth>k__BackingField: 1
+  <ExplosionConfig>k__BackingField: {fileID: 11400000, guid: 1f55fd1d3570d4643a0c26631f120fc2,
+    type: 2}
