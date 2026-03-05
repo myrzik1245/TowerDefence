@@ -9,7 +9,7 @@ namespace _Project.Code.Runtime.Utility.StateMachineCore
 {
     public class StateMachine<TState> : State, IDisposable where TState : class, IState
     {
-        private readonly List<StateNode<TState>> _states;
+        private readonly List<StateNode<TState>> _states = new();
         private StateNode<TState> _currentState;
         private bool _isRunning;
 
@@ -41,7 +41,7 @@ namespace _Project.Code.Runtime.Utility.StateMachineCore
             {
                 if (transition.Condition.IsCompleate())
                 {
-                    SwichState(transition.ToState);
+                    SwitchState(transition.ToState);
                     break;
                 }
             }
@@ -50,7 +50,7 @@ namespace _Project.Code.Runtime.Utility.StateMachineCore
         public override void Enter()
         {
             if (_currentState == null)
-                SwichState(_states[0]);
+                SwitchState(_states[0]);
             else
                 _currentState.State.Enter();
 
@@ -71,7 +71,7 @@ namespace _Project.Code.Runtime.Utility.StateMachineCore
             _states.Clear();
         }
 
-        private void SwichState(StateNode<TState> nextState)
+        private void SwitchState(StateNode<TState> nextState)
         {
             _currentState?.State.Exit();
             _currentState = nextState;

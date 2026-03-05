@@ -1,4 +1,5 @@
-﻿using _Project.Code.Runtime.Gameplay.AttackFeature;
+﻿using _Project.Code.Runtime.Gameplay.AI;
+using _Project.Code.Runtime.Gameplay.AttackFeature;
 using _Project.Code.Runtime.Gameplay.HealthFeature;
 using _Project.Code.Runtime.Gameplay.MovementFeature;
 using _Project.Code.Runtime.Gameplay.TeamFeature;
@@ -9,17 +10,19 @@ using UnityEngine;
 namespace _Project.Code.Runtime.Gameplay.Characters
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class Bomber : MonoBehaviour, IDamageble, IReadOnlyHealth, IMovable, IRotatable, ITeam
+    public class Bomber : MonoBehaviour, ICharacter, IMovable, IRotatable, IPositionAttack
     {
         private Health _health;
         private IPositionAttack _attack;
         private RigidbodyMover _rigidbodyMover;
         private RigidbodyRotator _rigidbodyRotator;
+        private readonly Blackboard _blackboard = new Blackboard();
 
         public IReadOnlyReactiveVariable<bool> IsDead => _health.IsDead;
         public IReadOnlyReactiveVariable<int> CurrentHealth => _health.CurrentHealth;
         public IReadOnlyReactiveVariable<int> MaxHealth => _health.MaxHealth;
         public IReadOnlyReactiveVariable<Vector3> Position => _rigidbodyMover.Position;
+        public IReadOnlyReactiveVariable<Vector3>  MoveDirection => _rigidbodyMover.Direction;
         public IReadOnlyReactiveVariable<Quaternion> Rotation => _rigidbodyRotator.Rotation;
         public TeamsType TeamType { get; private set; }
 
@@ -38,6 +41,7 @@ namespace _Project.Code.Runtime.Gameplay.Characters
             TeamType = teamType;
 
             _health = new Health(startHealth, maxHealth);
+            
             _rigidbodyMover = new RigidbodyMover(
                 GetComponent<Rigidbody>(),
                 moveSpeed,
@@ -63,9 +67,9 @@ namespace _Project.Code.Runtime.Gameplay.Characters
             _health.TakeDamage(damage);
         }
 
-        public void Attack()
+        public void Attack(Vector3 position)
         {
-            _attack.Attack(transform.position);
+            _attack.Attack(position);
             _health.Kill();
         }
 
@@ -77,6 +81,16 @@ namespace _Project.Code.Runtime.Gameplay.Characters
         public void Rotate(Vector3 direction, float deltaTime)
         {
             _rigidbodyRotator.Rotate(direction, deltaTime);
+        }
+        
+        public void WriteData(string key, object value)
+        {
+            _blackboard.WriteData(key, value);
+        }
+        
+        public bool TryGetData<TData>(string key, out TData data)
+        {
+            return _blackboard.TryGetData(key, out data);
         }
 
         private void OnDestroy()

@@ -1,11 +1,10 @@
-﻿using _Project.Code.Runtime.Configs.Level;
-using _Project.Code.Runtime.Gameplay.Characters;
+﻿using _Project.Code.MainHero;
+using _Project.Code.Runtime.Gameplay.AI.Brains;
 using _Project.Code.Runtime.Gameplay.StageFeature;
-using _Project.Code.Runtime.Gameplay.TeamFeature;
 using _Project.Code.Runtime.Infrastructure.Registrations;
-using _Project.Code.Runtime.Utility.ConfigManagment;
 using _Project.Code.Runtime.Utility.DI;
 using _Project.Code.Runtime.Utility.SceneManagment.SceneInputArgs;
+using _Project.Code.Runtime.Utility.Update;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -14,50 +13,47 @@ namespace _Project.Code.Runtime.Infrastructure.EntryPoints.SceneEntryPoints
 {
     public class GameplayEntryPoint : SceneEntryPoint
     {
-        private IStage _stage;
-        private GameplayInputArgs _inputArgs;
-        private Tower _player;
-        
+        private IUpdatableService _updatableService;
+        private BrainsContext _brainsContext;
+
         public override IEnumerator Initialize(DIContainer container, IInputSceneArgs inputSceneArgs)
         {
-            GameplayRegistrations.Register(container);
-            
             if (inputSceneArgs is not GameplayInputArgs gameplayInputArgs)
                 throw new ArgumentException($"Input args must be of type {nameof(GameplayInputArgs)}");
+            
+            GameplayRegistrations.Register(container, gameplayInputArgs);
 
-            _inputArgs = gameplayInputArgs;
+            _updatableService = container.Resolve<IUpdatableService>();
+            _brainsContext = container.Resolve<BrainsContext>();
             
-            StageFactory stageFactory = container.Resolve<StageFactory>();
-            ConfigsProvider configsProvider = container.Resolve<ConfigsProvider>();
-            LevelsConfig levelsConfig = configsProvider.GetConfig<LevelsConfig>();
-            LevelConfig levelConfig = levelsConfig.Levels[_inputArgs.Level];
-            CharactersFactory charactersFactory = container.Resolve<CharactersFactory>();
+            _updatableService.AddRequest(_brainsContext);
             
-            _player = charactersFactory.CreateTower(levelConfig.TowerConfig, Vector3.zero, TeamsType.Player);
-            _stage = stageFactory.Create(levelConfig.Stages[0]);
-            _stage.Compleated.Subscribe(() => Debug.Log("Completed"));
-                
+            StageService stageService = container.Resolve<StageService>();
+            MainHeroFactory mainHeroFactory = container.Resolve<MainHeroFactory>();
+            
+            mainHeroFactory.CreateTower(Vector3.zero);
+            
+            stageService.SwitchToNext();
+            stageService.Start();
+            
+            stageService.Stage.Compleated.Subscribe(() => 
+            {
+                stageService.SwitchToNext(); 
+                stageService.Start();
+                Debug.Log("Compleated");
+            });
+            
             yield break;
         }
 
         public override void Run()
         {
-            _stage.Enter();
         }
 
-        private void Update()
+
+        private void OnDestroy()
         {
-            if (Input.GetKeyDown(KeyCode.Mouse0))
-            {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
-                
-                if (groundPlane.Raycast(ray, out float rayDistance))
-                {
-                    Vector3 worldPoint = ray.GetPoint(rayDistance);
-                    _player.Attack(worldPoint);
-                }
-            }
+            _updatableService.RemoveRequest(_brainsContext);
         }
     }
 }

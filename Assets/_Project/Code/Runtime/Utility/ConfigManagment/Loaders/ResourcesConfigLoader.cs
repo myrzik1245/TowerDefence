@@ -1,6 +1,5 @@
 using _Project.Code.Runtime.Configs.Characters;
 using _Project.Code.Runtime.Configs.Level;
-using _Project.Code.Runtime.Gameplay.Characters;
 using _Project.Code.Runtime.Utility.AssetsManagment;
 using System;
 using System.Collections;

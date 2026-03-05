@@ -1,22 +1,21 @@
-﻿using _Project.Code.Runtime.Gameplay.Characters;
+﻿using _Project.Code.Runtime.Enemy;
 using _Project.Code.Runtime.Utility.DI;
 using _Project.Code.Runtime.Utility.PositionRandomizer;
-using UnityEngine;
 
 namespace _Project.Code.Runtime.Gameplay.SpawnerFeature
 {
     public class SpawnersFactory
     {
-        private readonly CharactersFactory _charactersFactory;
+        private readonly EnemiesFactory _enemiesFactory;
         
         public SpawnersFactory(DIContainer container)
         {
-            _charactersFactory = container.Resolve<CharactersFactory>();
+            _enemiesFactory = container.Resolve<EnemiesFactory>();
         }
         
-        public Spawner CreateRadiusSpawner(float radius)
+        public RadiusSpawner CreateRadiusSpawner(float radius)
         {
-            return new Spawner(new RadiusPositionRandomizer(radius), _charactersFactory);
+            return new RadiusSpawner(new RadiusPositionRandomizer(radius), _enemiesFactory);
         }
     }
 }

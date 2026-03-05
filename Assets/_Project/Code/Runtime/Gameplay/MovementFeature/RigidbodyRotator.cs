@@ -7,7 +7,7 @@ namespace _Project.Code.Runtime.Gameplay.MovementFeature
     {
         private readonly Rigidbody _rigidbody;
         private readonly float _speed;
-        private readonly ReactiveVariable<Quaternion> _rotation = new ReactiveVariable<Quaternion>();
+        private readonly ReactiveVariable<Quaternion> _rotation;
 
         public IReadOnlyReactiveVariable<Quaternion> Rotation => _rotation;
 
@@ -15,6 +15,8 @@ namespace _Project.Code.Runtime.Gameplay.MovementFeature
         {
             _rigidbody = rigidbody;
             _speed = speed;
+            
+            _rotation = new ReactiveVariable<Quaternion>(_rigidbody.rotation);
         }
 
         public void Rotate(Vector3 direction, float deltaTime)

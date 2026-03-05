@@ -1,4 +1,5 @@
 ﻿using _Project.Code.Runtime.Configs.Characters;
+using _Project.Code.Runtime.Enemy;
 using _Project.Code.Runtime.Gameplay.Characters;
 using _Project.Code.Runtime.Gameplay.TeamFeature;
 using _Project.Code.Runtime.Utility.PositionRandomizer;
@@ -7,25 +8,27 @@ using UnityEngine;
 
 namespace _Project.Code.Runtime.Gameplay.SpawnerFeature
 {
-    public class Spawner
+    public class RadiusSpawner
     {
         private readonly IPositionRandomizer _positionRandomizer;
-        private readonly CharactersFactory _charactersFactory;
+        private readonly EnemiesFactory _enemiesFactory;
         
-        public Spawner(IPositionRandomizer positionRandomizer, CharactersFactory charactersFactory)
+        public RadiusSpawner(IPositionRandomizer positionRandomizer, EnemiesFactory enemiesFactory)
         {
             _positionRandomizer = positionRandomizer;
-            _charactersFactory = charactersFactory;
+            _enemiesFactory = enemiesFactory;
         }
 
-        public List<GameObject> Spawn(IEnumerable<CharacterConfig> configs, TeamsType teamType)
+        public List<ICharacter> Spawn(IEnumerable<CharacterConfig> configs, TeamsType teamType)
         {
-            List<GameObject> spawnedEnemies = new();
+            List<ICharacter> spawnedEnemies = new();
             
             foreach (CharacterConfig config in configs)
             {
                 Vector3 spawnPosition = _positionRandomizer.GetRandomPosition(Vector3.up);
-                GameObject instance = _charactersFactory.Create(config, spawnPosition, teamType);
+                
+                ICharacter instance = _enemiesFactory.Create(config, spawnPosition);
+                
                 spawnedEnemies.Add(instance);
             }
             

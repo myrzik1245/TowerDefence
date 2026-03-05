@@ -4,6 +4,8 @@ using _Project.Code.Runtime.Utility.ConfigManagment;
 using _Project.Code.Runtime.Utility.ConfigManagment.Loaders;
 using _Project.Code.Runtime.Utility.CoroutineManagment;
 using _Project.Code.Runtime.Utility.DI;
+using _Project.Code.Runtime.Utility.InputService;
+using _Project.Code.Runtime.Utility.InputService.Keyboard;
 using _Project.Code.Runtime.Utility.LoadScreen;
 using _Project.Code.Runtime.Utility.SceneManagment;
 using _Project.Code.Runtime.Utility.Update;
@@ -23,10 +25,16 @@ namespace _Project.Code.Runtime.Infrastructure.Registrations
             projectContainer.Register(CreateUpdatableService).AsSingle();
             projectContainer.Register(CreateViewsFactory).AsSingle();
             projectContainer.Register(CreateProjectPresentersFactory).AsSingle();
+            projectContainer.Register(CreateInputService).AsSingle();
 
             projectContainer.Initialize();
         }
 
+        private static IInputService CreateInputService(DIContainer c)
+        {
+            return new KeyboardInput();
+        }
+        
         private static ProjectPresentersFactory CreateProjectPresentersFactory(DIContainer c)
         {
             return new ProjectPresentersFactory(c);

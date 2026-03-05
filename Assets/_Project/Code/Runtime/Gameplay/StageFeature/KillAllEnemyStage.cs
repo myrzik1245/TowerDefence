@@ -1,86 +1,65 @@
 ﻿using _Project.Code.Runtime.Configs.Level;
-using _Project.Code.Runtime.Gameplay.HealthFeature;
+using _Project.Code.Runtime.Gameplay.Characters;
 using _Project.Code.Runtime.Gameplay.SpawnerFeature;
 using _Project.Code.Runtime.Gameplay.TeamFeature;
 using _Project.Code.Runtime.Utility.Reactive.Event;
 using System;
 using System.Collections.Generic;
-using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace _Project.Code.Runtime.Gameplay.StageFeature
 {
     public class KillAllEnemyStage : IStage
     {
-        private readonly KillAllEnemyStageConfig _config; 
-        private readonly Spawner _spawner;
+        private readonly KillAllEnemyStageConfig _config;
+        private readonly RadiusSpawner _radiusSpawner;
         private readonly ReactiveEvent _completed = new();
-        private readonly Dictionary<GameObject, IDisposable> _enemyToSubscribe = new();
+        private readonly Dictionary<ICharacter, IDisposable> _enemyToSubscribe = new();
 
-        private bool _isRun;
-
-        public KillAllEnemyStage(KillAllEnemyStageConfig config, Spawner spawner)
+        public KillAllEnemyStage(KillAllEnemyStageConfig config, RadiusSpawner radiusSpawner)
         {
             _config = config;
-            _spawner = spawner;
+            _radiusSpawner = radiusSpawner;
         }
 
         public IReadOnlyReactiveEvent Compleated => _completed;
 
-        public void Enter()
+        public void Start()
         {
-            List<GameObject> spawnedEnemies = _spawner.Spawn(_config.Enemies, TeamsType.Enemy);    
-            
-            foreach (GameObject enemy in spawnedEnemies)
+            List<ICharacter> spawnedEnemies = _radiusSpawner.Spawn(_config.Enemies, TeamsType.Enemy);
+
+            foreach (ICharacter enemy in spawnedEnemies)
             {
-                if (enemy.TryGetComponent(out IAlive alive))
-                {
-                    IDisposable isDeathSubscribe = alive.IsDead.Subscribe(isDead => {
-                        if (isDead)
-                        {
-                            _enemyToSubscribe[enemy].Dispose();
-                            _enemyToSubscribe.Remove(enemy);
-                        }
-                    });
+                IDisposable isDeathSubscribe = enemy.IsDead.Subscribe(isDead => {
+                    if (isDead)
+                    {
+                        _enemyToSubscribe[enemy].Dispose();
+                        _enemyToSubscribe.Remove(enemy);
 
-                    _enemyToSubscribe.Add(enemy, isDeathSubscribe);
-                }
+                        if (_enemyToSubscribe.Count <= 0)
+                            _completed.Invoke();
+                    }
+                });
+
+                _enemyToSubscribe.Add(enemy, isDeathSubscribe);
             }
-
-            _isRun = true;
         }
 
-        public void Exit()
+        public void CleanUp()
         {
-            foreach (KeyValuePair<GameObject, IDisposable> enemy in _enemyToSubscribe)
-            {
-                Object.Destroy(enemy.Key);
+            foreach (KeyValuePair<ICharacter, IDisposable> enemy in _enemyToSubscribe)
                 enemy.Value.Dispose();
-            }
 
             _enemyToSubscribe.Clear();
-
-            _isRun = false;
         }
 
         public void Update(float deltaTime)
         {
-            if (_isRun == false)
-                return;
-
-            if (_enemyToSubscribe.Count <= 0)
-            {
-                _isRun = false;
-                _completed.Invoke();
-            }
         }
 
         public void Dispose()
         {
-            foreach (KeyValuePair<GameObject, IDisposable> enemy in _enemyToSubscribe)
+            foreach (KeyValuePair<ICharacter, IDisposable> enemy in _enemyToSubscribe)
                 enemy.Value.Dispose();
-
-            _isRun = false;
         }
     }
 }

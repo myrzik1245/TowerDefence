@@ -5,11 +5,11 @@ using System;
 
 namespace _Project.Code.Runtime.Gameplay.StageFeature
 {
-    public class StageFactory
+    public class StagesFactory
     {
         private readonly SpawnersFactory _spawnersFactory;
         
-        public StageFactory(DIContainer container)
+        public StagesFactory(DIContainer container)
         {
             _spawnersFactory = container.Resolve<SpawnersFactory>();
         }

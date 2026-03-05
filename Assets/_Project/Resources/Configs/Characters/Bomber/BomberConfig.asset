@@ -18,7 +18,7 @@ MonoBehaviour:
     <MaxHealth>k__BackingField: 2
     <ClampHealth>k__BackingField: 1
   <MovementConfigData>k__BackingField:
-    <Speed>k__BackingField: 10
+    <Speed>k__BackingField: 2
     <Smooth>k__BackingField: 5
   <RotatorConfigData>k__BackingField:
     <Speed>k__BackingField: 20
