@@ -3,6 +3,7 @@ using _Project.Code.Runtime.Gameplay.AttackFeature;
 using _Project.Code.Runtime.Gameplay.HealthFeature;
 using _Project.Code.Runtime.Gameplay.TeamFeature;
 using _Project.Code.Runtime.Utility.Reactive.Variable;
+using System;
 using UnityEngine;
 
 namespace _Project.Code.Runtime.Gameplay.Characters
@@ -21,6 +22,8 @@ namespace _Project.Code.Runtime.Gameplay.Characters
 
         public IReadOnlyReactiveVariable<Vector3> Position => _position;
 
+        private IDisposable _disposable;
+        
         public void Initialize(
             int startHealth,
             int maxHealth,
@@ -31,6 +34,12 @@ namespace _Project.Code.Runtime.Gameplay.Characters
             TeamType = teamType;
             _health = new Health(startHealth, maxHealth);
             _position = new ReactiveVariable<Vector3>(transform.position);
+
+            _disposable = _health.IsDead.Subscribe(isDead =>
+            {
+                if (isDead)
+                    Destroy(gameObject);
+            });
         }
 
         public bool CanTakeDamage(int healAmount)
@@ -66,6 +75,11 @@ namespace _Project.Code.Runtime.Gameplay.Characters
         public bool TryGetData<TData>(string key, out TData data)
         {
             return _blackboard.TryGetData<TData>(key, out data);
+        }
+
+        private void OnDestroy()
+        {
+            _disposable?.Dispose();
         }
     }
 }

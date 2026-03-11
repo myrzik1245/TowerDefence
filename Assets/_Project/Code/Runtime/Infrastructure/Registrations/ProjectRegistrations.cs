@@ -1,4 +1,6 @@
-﻿using _Project.Code.Runtime.UI.Factories;
+﻿using _Project.Code.Runtime.Meta.WalletFeature;
+using _Project.Code.Runtime.Meta.WinLoseFeature;
+using _Project.Code.Runtime.UI.Factories;
 using _Project.Code.Runtime.Utility.AssetsManagment;
 using _Project.Code.Runtime.Utility.ConfigManagment;
 using _Project.Code.Runtime.Utility.ConfigManagment.Loaders;
@@ -26,10 +28,22 @@ namespace _Project.Code.Runtime.Infrastructure.Registrations
             projectContainer.Register(CreateViewsFactory).AsSingle();
             projectContainer.Register(CreateProjectPresentersFactory).AsSingle();
             projectContainer.Register(CreateInputService).AsSingle();
+            projectContainer.Register(CreateWallet).AsSingle();
+            projectContainer.Register(CreateWinLoseCounter).AsSingle();
 
             projectContainer.Initialize();
         }
 
+        private static WinLoseCounter CreateWinLoseCounter(DIContainer c)
+        {
+            return new WinLoseCounter();
+        }
+        
+        private static Wallet CreateWallet(DIContainer c)
+        {
+            return new Wallet();
+        }
+        
         private static IInputService CreateInputService(DIContainer c)
         {
             return new KeyboardInput();

@@ -1,11 +1,13 @@
-﻿using _Project.Code.MainHero;
-using _Project.Code.Runtime.Configs.Level;
+﻿using _Project.Code.Runtime.Configs.Level;
 using _Project.Code.Runtime.Enemy;
 using _Project.Code.Runtime.Gameplay.AI;
 using _Project.Code.Runtime.Gameplay.AI.Brains;
 using _Project.Code.Runtime.Gameplay.AttackFeature;
 using _Project.Code.Runtime.Gameplay.Characters;
+using _Project.Code.Runtime.Gameplay.DefenceFeature;
 using _Project.Code.Runtime.Gameplay.ExplosionFeature;
+using _Project.Code.Runtime.Gameplay.GameLoop;
+using _Project.Code.Runtime.Gameplay.MainHero;
 using _Project.Code.Runtime.Gameplay.SpawnerFeature;
 using _Project.Code.Runtime.Gameplay.StageFeature;
 using _Project.Code.Runtime.Utility.ConfigManagment;
@@ -32,10 +34,31 @@ namespace _Project.Code.Runtime.Infrastructure.Registrations
             gameplayContainer.Register(CreateMainHeroFactory).AsSingle();
             gameplayContainer.Register(CreateEnemiesFactory).AsSingle();
             gameplayContainer.Register(CreateStageService).AsSingle();
+            gameplayContainer.Register(CreateGameplayStatesFactory).AsSingle();
+            gameplayContainer.Register(CreateDefenceObjectsFactory).AsSingle();
+            gameplayContainer.Register(CreateMainHeroService).AsSingle();
 
             gameplayContainer.Initialize();
         }
 
+        private static MainHeroService CreateMainHeroService(DIContainer c)
+        {
+            return new MainHeroService(
+                c.Resolve<MainHeroFactory>());
+        }
+        
+        private static DefenceObjectsFactory CreateDefenceObjectsFactory(DIContainer c)
+        {
+            return new DefenceObjectsFactory(c);
+        }
+        
+        private static GameplayStatesFactory CreateGameplayStatesFactory(DIContainer c)
+        {
+            return new GameplayStatesFactory(
+                c,
+                _gameplayInputArgs);
+        }
+        
         private static StageService CreateStageService(DIContainer c)
         {
             return new StageService(

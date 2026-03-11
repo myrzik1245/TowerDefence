@@ -19,10 +19,11 @@ namespace _Project.Code.Runtime.Gameplay.StageFeature
         }
 
         public IStage Stage { get; private set; }
+        public IReadOnlyReactiveVariable<bool> IsCompleate => Stage.IsCompleate;
 
-        public bool HasStage()
+        public bool HasNextStage()
         {
-            return _levelConfig.HasStages(_stageIndex.Value + 1);
+            return _stageIndex.Value + 1 <= _levelConfig.Stages.Count;
         }
 
         public void Update(float deltaTime)
@@ -32,19 +33,16 @@ namespace _Project.Code.Runtime.Gameplay.StageFeature
         
         public void SwitchToNext()
         {
-            if (HasStage() == false)
+            if (HasNextStage() == false)
                 throw new InvalidOperationException("Cannot switch to next stage.");
             
             if (Stage != null)
                 CleanUp();
             
-            _stageIndex.Value++;
             Stage = CreateStage();
-        }
-
-        public void Start()
-        {
             Stage.Start();
+            
+            _stageIndex.Value++;
         }
 
         public void CleanUp()
@@ -54,12 +52,13 @@ namespace _Project.Code.Runtime.Gameplay.StageFeature
         
         public void Dispose()
         {
+            CleanUp();
             Stage?.Dispose();
         }
         
         private IStage CreateStage()
         {
-            return _stagesFactory.Create(_levelConfig.GetStageByIndex(_stageIndex.Value));
+            return _stagesFactory.Create(_levelConfig.Stages[_stageIndex.Value]);
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿using _Project.Code.MainHero;
-using _Project.Code.Runtime.Gameplay.AI.Brains;
-using _Project.Code.Runtime.Gameplay.StageFeature;
+﻿using _Project.Code.Runtime.Gameplay.AI.Brains;
+using _Project.Code.Runtime.Gameplay.GameLoop;
+using _Project.Code.Runtime.Gameplay.MainHero;
 using _Project.Code.Runtime.Infrastructure.Registrations;
 using _Project.Code.Runtime.Utility.DI;
 using _Project.Code.Runtime.Utility.SceneManagment.SceneInputArgs;
@@ -15,6 +15,7 @@ namespace _Project.Code.Runtime.Infrastructure.EntryPoints.SceneEntryPoints
     {
         private IUpdatableService _updatableService;
         private BrainsContext _brainsContext;
+        private GameplayStateMachine _gameLoop;
 
         public override IEnumerator Initialize(DIContainer container, IInputSceneArgs inputSceneArgs)
         {
@@ -26,34 +27,29 @@ namespace _Project.Code.Runtime.Infrastructure.EntryPoints.SceneEntryPoints
             _updatableService = container.Resolve<IUpdatableService>();
             _brainsContext = container.Resolve<BrainsContext>();
             
-            _updatableService.AddRequest(_brainsContext);
-            
-            StageService stageService = container.Resolve<StageService>();
+            GameplayStatesFactory gameplayStatesFactory = container.Resolve<GameplayStatesFactory>();
             MainHeroFactory mainHeroFactory = container.Resolve<MainHeroFactory>();
-            
+
             mainHeroFactory.CreateTower(Vector3.zero);
             
-            stageService.SwitchToNext();
-            stageService.Start();
+            _gameLoop = gameplayStatesFactory.CreateGameplayStateMachine();
             
-            stageService.Stage.Compleated.Subscribe(() => 
-            {
-                stageService.SwitchToNext(); 
-                stageService.Start();
-                Debug.Log("Compleated");
-            });
+            _updatableService.AddRequest(_brainsContext);
+            _updatableService.AddRequest(_gameLoop);
             
             yield break;
         }
 
         public override void Run()
         {
+            _gameLoop.Enter();
         }
-
+        
 
         private void OnDestroy()
         {
             _updatableService.RemoveRequest(_brainsContext);
+            _updatableService.RemoveRequest(_gameLoop);
         }
     }
 }

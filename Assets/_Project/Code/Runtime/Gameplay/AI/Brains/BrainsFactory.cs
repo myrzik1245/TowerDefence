@@ -34,7 +34,8 @@ namespace _Project.Code.Runtime.Gameplay.AI.Brains
                 new FuncCondition(() => 
                 {
                     if (bomber.TryGetData(BlackboardKeys.Target, out Transform target))
-                        return Vector3.Distance(target.position, bomber.Position.Value) < 1f;
+                        if (target != null)
+                            return Vector3.Distance(target.position, bomber.Position.Value) < 1f;
                     
                     return false;
                 }));

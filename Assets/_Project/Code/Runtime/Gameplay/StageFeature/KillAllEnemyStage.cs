@@ -2,7 +2,7 @@
 using _Project.Code.Runtime.Gameplay.Characters;
 using _Project.Code.Runtime.Gameplay.SpawnerFeature;
 using _Project.Code.Runtime.Gameplay.TeamFeature;
-using _Project.Code.Runtime.Utility.Reactive.Event;
+using _Project.Code.Runtime.Utility.Reactive.Variable;
 using System;
 using System.Collections.Generic;
 
@@ -12,7 +12,7 @@ namespace _Project.Code.Runtime.Gameplay.StageFeature
     {
         private readonly KillAllEnemyStageConfig _config;
         private readonly RadiusSpawner _radiusSpawner;
-        private readonly ReactiveEvent _completed = new();
+        private readonly ReactiveVariable<bool> _completed = new();
         private readonly Dictionary<ICharacter, IDisposable> _enemyToSubscribe = new();
 
         public KillAllEnemyStage(KillAllEnemyStageConfig config, RadiusSpawner radiusSpawner)
@@ -21,7 +21,7 @@ namespace _Project.Code.Runtime.Gameplay.StageFeature
             _radiusSpawner = radiusSpawner;
         }
 
-        public IReadOnlyReactiveEvent Compleated => _completed;
+        public IReadOnlyReactiveVariable<bool> IsCompleate => _completed;
 
         public void Start()
         {
@@ -36,7 +36,7 @@ namespace _Project.Code.Runtime.Gameplay.StageFeature
                         _enemyToSubscribe.Remove(enemy);
 
                         if (_enemyToSubscribe.Count <= 0)
-                            _completed.Invoke();
+                            _completed.Value = true;
                     }
                 });
 

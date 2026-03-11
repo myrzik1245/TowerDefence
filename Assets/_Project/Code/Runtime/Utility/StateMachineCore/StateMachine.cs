@@ -13,7 +13,7 @@ namespace _Project.Code.Runtime.Utility.StateMachineCore
         private StateNode<TState> _currentState;
         private bool _isRunning;
 
-        protected TState CurrentState => _currentState.State;
+        protected TState CurrentState => _currentState?.State;
 
         public StateMachine<TState> AddState(TState state)
         {

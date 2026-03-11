@@ -12,9 +12,5 @@ namespace _Project.Code.Runtime.Configs.Level
         [field: SerializeField] public TowerConfig TowerConfig { get; private set; }
         
         public IReadOnlyList<StageConfig> Stages => _stages;
-        
-        public StageConfig GetStageByIndex(int stageNumber) => Stages[stageNumber - 1];
-        
-        public bool HasStages(int stageNumber) => stageNumber - 1 < _stages.Length;
     }
 }

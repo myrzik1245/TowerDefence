@@ -1,5 +1,8 @@
+using _Project.Code.Runtime.Configs;
 using _Project.Code.Runtime.Configs.Characters;
 using _Project.Code.Runtime.Configs.Level;
+using _Project.Code.Runtime.Configs.Mine;
+using _Project.Code.Runtime.Configs.Shop;
 using _Project.Code.Runtime.Utility.AssetsManagment;
 using System;
 using System.Collections;
@@ -16,6 +19,9 @@ namespace _Project.Code.Runtime.Utility.ConfigManagment.Loaders
             { typeof(TowerConfig), "Configs/Characters/Tower/TowerConfig" },
             { typeof(BomberConfig), "Configs/Characters/Bomber/BomberConfig" },
             { typeof(LevelsConfig), "Configs/Levels/LevelsConfig" },
+            { typeof(MineConfig), "Configs/DefenceObjects/Mine/MineConfig" },
+            { typeof(ShopConfig), "Configs/Shop/ShopConfig" },
+            { typeof(BonusConfig), "Configs/Bonus/BonusConfig" },
         };
 
         public ResourcesConfigLoader(ResourcesAssetsLoader resourcesAssetsLoader)
