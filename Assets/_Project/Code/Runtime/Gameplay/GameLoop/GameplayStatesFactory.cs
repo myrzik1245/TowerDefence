@@ -1,4 +1,5 @@
-﻿using _Project.Code.Runtime.Gameplay.DefenceFeature;
+﻿using _Project.Code.Runtime.Data.Player;
+using _Project.Code.Runtime.Gameplay.DefenceFeature;
 using _Project.Code.Runtime.Gameplay.GameLoop.States;
 using _Project.Code.Runtime.Gameplay.MainHero;
 using _Project.Code.Runtime.Gameplay.StageFeature;
@@ -26,6 +27,7 @@ namespace _Project.Code.Runtime.Gameplay.GameLoop
         private readonly GameplayInputArgs _gameplayInputArgs;
         private readonly Wallet _wallet;
         private readonly WinLoseCounter _winLoseCounter;
+        private readonly PlayerDataProvider _playerDataProvider;
         
         public GameplayStatesFactory(DIContainer container, GameplayInputArgs gameplayInputArgs)
         {
@@ -38,6 +40,7 @@ namespace _Project.Code.Runtime.Gameplay.GameLoop
             _mainHeroService = container.Resolve<MainHeroService>();
             _wallet = container.Resolve<Wallet>();
             _winLoseCounter = container.Resolve<WinLoseCounter>();
+            _playerDataProvider = container.Resolve<PlayerDataProvider>();
             
             _gameplayInputArgs = gameplayInputArgs;
         }
@@ -49,12 +52,15 @@ namespace _Project.Code.Runtime.Gameplay.GameLoop
             LoseState loseState = new LoseState(
                 _loadSceneService,
                 _coroutinePerformer,
-                _gameplayInputArgs);
-            
+                _gameplayInputArgs,
+                _playerDataProvider,
+                _winLoseCounter);
+
             WinState winState = new WinState(
                 _loadSceneService,
                 _coroutinePerformer,
                 _gameplayInputArgs,
+                _playerDataProvider,
                 _wallet,
                 _configsProvider,
                 _winLoseCounter);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace _Project.Code.Runtime.Utility.DataManagment.DataProviders
 {
@@ -36,7 +37,13 @@ namespace _Project.Code.Runtime.Utility.DataManagment.DataProviders
 
         public IEnumerator Load()
         {
-            yield return _saveLoadService.Load<TData>(loadedData => _data = loadedData);
+            bool existsResult = false;
+            yield return Exists(result => existsResult = result);
+            
+            if(existsResult)
+                yield return _saveLoadService.Load<TData>(loadedData => _data = loadedData);
+            else
+                _data = GetOriginData();
 
             SendDataToReaders();
         }
@@ -44,7 +51,7 @@ namespace _Project.Code.Runtime.Utility.DataManagment.DataProviders
         public IEnumerator Save()
         {
             UpdateDataFromWriters();
-
+            
             yield return _saveLoadService.Save(_data);
         }
 

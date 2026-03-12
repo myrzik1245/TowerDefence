@@ -1,10 +1,15 @@
-﻿using _Project.Code.Runtime.Meta.WalletFeature;
+﻿using _Project.Code.Runtime.Data.Player;
+using _Project.Code.Runtime.Meta.WalletFeature;
 using _Project.Code.Runtime.Meta.WinLoseFeature;
 using _Project.Code.Runtime.UI.Factories;
 using _Project.Code.Runtime.Utility.AssetsManagment;
 using _Project.Code.Runtime.Utility.ConfigManagment;
 using _Project.Code.Runtime.Utility.ConfigManagment.Loaders;
 using _Project.Code.Runtime.Utility.CoroutineManagment;
+using _Project.Code.Runtime.Utility.DataManagment;
+using _Project.Code.Runtime.Utility.DataManagment.DataRepository;
+using _Project.Code.Runtime.Utility.DataManagment.KeysStorage;
+using _Project.Code.Runtime.Utility.DataManagment.Serializers;
 using _Project.Code.Runtime.Utility.DI;
 using _Project.Code.Runtime.Utility.InputService;
 using _Project.Code.Runtime.Utility.InputService.Keyboard;
@@ -28,20 +33,38 @@ namespace _Project.Code.Runtime.Infrastructure.Registrations
             projectContainer.Register(CreateViewsFactory).AsSingle();
             projectContainer.Register(CreateProjectPresentersFactory).AsSingle();
             projectContainer.Register(CreateInputService).AsSingle();
-            projectContainer.Register(CreateWallet).AsSingle();
-            projectContainer.Register(CreateWinLoseCounter).AsSingle();
+            projectContainer.Register(CreateWallet).AsSingle().NonLazy();
+            projectContainer.Register(CreateWinLoseCounter).AsSingle().NonLazy();
+            projectContainer.Register(CreatePlayerDataProvider).AsSingle();
+            projectContainer.Register(CreateSaveLoadService).AsSingle();
 
             projectContainer.Initialize();
         }
 
+        private static SaveLoadService CreateSaveLoadService(DIContainer c)
+        {
+            return new SaveLoadService(
+                new JsonSerializer(),
+                new MapDataKeysStorage(),
+                new PlayerPrefsDataRepository());
+        }
+        
+        private static PlayerDataProvider CreatePlayerDataProvider(DIContainer c)
+        {
+            return new PlayerDataProvider(
+                c.Resolve<SaveLoadService>());
+        }
+        
         private static WinLoseCounter CreateWinLoseCounter(DIContainer c)
         {
-            return new WinLoseCounter();
+            return new WinLoseCounter(
+                c.Resolve<PlayerDataProvider>());
         }
         
         private static Wallet CreateWallet(DIContainer c)
         {
-            return new Wallet();
+            return new Wallet(
+                c.Resolve<PlayerDataProvider>());
         }
         
         private static IInputService CreateInputService(DIContainer c)

@@ -1,3 +1,4 @@
+using _Project.Code.Runtime.Data.Player;
 using _Project.Code.Runtime.Infrastructure.Registrations;
 using _Project.Code.Runtime.Utility.ConfigManagment;
 using _Project.Code.Runtime.Utility.CoroutineManagment;
@@ -29,7 +30,10 @@ namespace _Project.Code.Runtime.Infrastructure.EntryPoints
 
             ConfigsProvider configsProvider = projectContainer.Resolve<ConfigsProvider>();
             LoadSceneService loadSceneService = projectContainer.Resolve<LoadSceneService>();
+            PlayerDataProvider playerDataProvider = projectContainer.Resolve<PlayerDataProvider>();
 
+            yield return playerDataProvider.Load();
+            
             yield return configsProvider.LoadAsync();
             yield return loadSceneService.LoadAsync(Scenes.MainMenu);
 
