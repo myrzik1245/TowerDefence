@@ -29,7 +29,9 @@ namespace _Project.Code.Runtime.Gameplay.Characters
                 _attackFactory.CreateExplosionAttack(
                     towerConfig.ExplosionConfig,
                     instance.GetComponent<ITeam>()),
-                teamType);
+                teamType,
+                towerConfig.SpawnTime,
+                towerConfig.AttackTime);
             
             return instance;
         }
@@ -48,7 +50,8 @@ namespace _Project.Code.Runtime.Gameplay.Characters
                 bomberConfig.MovementConfigData.Speed,
                 bomberConfig.MovementConfigData.Smooth,
                 bomberConfig.RotatorConfigData.Speed,
-                teamType);
+                teamType,
+                bomberConfig.SpawnTime);
             
             return instance;
         }

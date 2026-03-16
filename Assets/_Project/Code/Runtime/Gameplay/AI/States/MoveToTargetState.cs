@@ -25,6 +25,10 @@ namespace _Project.Code.Runtime.Gameplay.AI.States
                 
                     _movable.Move(direction, deltaTime);
                 }
+                else
+                {
+                    _movable.Move(Vector3.zero, deltaTime);
+                }
             }
         }
     }

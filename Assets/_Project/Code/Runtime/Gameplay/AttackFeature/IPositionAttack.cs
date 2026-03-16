@@ -1,9 +1,12 @@
-﻿using UnityEngine;
+﻿using _Project.Code.Runtime.Utility.Reactive.Event;
+using _Project.Code.Runtime.Utility.Reactive.Variable;
+using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace _Project.Code.Runtime.Gameplay.AttackFeature
 {
-    public interface IPositionAttack
+    public interface IPositionAttack : IAttack
     {
-        public void Attack(Vector3 position);
+        IReadOnlyReactiveEvent<PositionAttackProcess> Attacked { get; }
     }
 }

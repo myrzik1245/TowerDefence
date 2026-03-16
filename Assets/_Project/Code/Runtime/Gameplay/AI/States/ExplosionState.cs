@@ -7,10 +7,10 @@ namespace _Project.Code.Runtime.Gameplay.AI.States
     public class ExplosionState : State, IUpdatableState
     {
         private readonly IBlackboard _blackboard;
-        private readonly IPositionAttack _positionAttack;
+        private readonly IAttack _positionAttack;
         private readonly IMovable _movable;
         
-        public ExplosionState(IBlackboard blackboard, IPositionAttack positionAttack, IMovable movable)
+        public ExplosionState(IBlackboard blackboard, IAttack positionAttack, IMovable movable)
         {
             _blackboard = blackboard;
             _positionAttack = positionAttack;

@@ -14,7 +14,7 @@ namespace _Project.Code.Runtime.Gameplay.AttackFeature
             _explosionsFactory = container.Resolve<ExplosionsFactory>();
         }
 
-        public IPositionAttack CreateExplosionAttack(ExplosionConfig config, ITeam sourceTeam)
+        public IAttack CreateExplosionAttack(ExplosionConfig config, ITeam sourceTeam)
         {
             Explosion explosion = _explosionsFactory.Create(config);
             return new ExplosionAttack(explosion, sourceTeam);

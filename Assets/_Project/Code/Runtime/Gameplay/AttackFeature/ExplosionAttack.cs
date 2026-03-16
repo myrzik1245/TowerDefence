@@ -4,11 +4,11 @@ using UnityEngine;
 
 namespace _Project.Code.Runtime.Gameplay.AttackFeature
 {
-    public class ExplosionAttack : IPositionAttack
+    public class ExplosionAttack : IAttack
     {
         private readonly Explosion _explosion;
         private readonly ITeam _sourceTeam;
-
+        
         public ExplosionAttack(Explosion explosion, ITeam sourceTeam)
         {
             _explosion = explosion;

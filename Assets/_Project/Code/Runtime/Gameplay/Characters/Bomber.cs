@@ -2,7 +2,9 @@
 using _Project.Code.Runtime.Gameplay.AttackFeature;
 using _Project.Code.Runtime.Gameplay.HealthFeature;
 using _Project.Code.Runtime.Gameplay.MovementFeature;
+using _Project.Code.Runtime.Gameplay.ProcessFeature;
 using _Project.Code.Runtime.Gameplay.TeamFeature;
+using _Project.Code.Runtime.Utility.Reactive.Event;
 using _Project.Code.Runtime.Utility.Reactive.Variable;
 using System;
 using UnityEngine;
@@ -10,13 +12,18 @@ using UnityEngine;
 namespace _Project.Code.Runtime.Gameplay.Characters
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class Bomber : MonoBehaviour, ICharacter, IMovable, IRotatable, IPositionAttack
+    public class Bomber : MonoBehaviour, ICharacter, IMovable, IRotatable, IMeleeAttack
     {
         private Health _health;
-        private IPositionAttack _attack;
+        private IAttack _attack;
         private RigidbodyMover _rigidbodyMover;
         private RigidbodyRotator _rigidbodyRotator;
-        private readonly Blackboard _blackboard = new Blackboard();
+        private Process _spawnProcess;
+        
+        private readonly Blackboard _blackboard = new();
+        private readonly ReactiveVariable<bool> _initialized = new();
+        private readonly ReactiveVariable<bool> _spawned = new();
+        private readonly ReactiveEvent<Vector3> _meleeAttacked = new();
 
         public IReadOnlyReactiveVariable<bool> IsDead => _health.IsDead;
         public IReadOnlyReactiveVariable<int> CurrentHealth => _health.CurrentHealth;
@@ -24,6 +31,9 @@ namespace _Project.Code.Runtime.Gameplay.Characters
         public IReadOnlyReactiveVariable<Vector3> Position => _rigidbodyMover.Position;
         public IReadOnlyReactiveVariable<Vector3>  MoveDirection => _rigidbodyMover.Direction;
         public IReadOnlyReactiveVariable<Quaternion> Rotation => _rigidbodyRotator.Rotation;
+        public IReadOnlyReactiveVariable<bool> IsInitialized => _initialized;
+        public IReadOnlyReactiveVariable<bool> IsSpawned => _spawned;
+        public IReadOnlyReactiveEvent<Vector3> MeleeAttacked => _meleeAttacked;
         public TeamsType TeamType { get; private set; }
 
         private IDisposable _isDeathSubscription;
@@ -31,11 +41,12 @@ namespace _Project.Code.Runtime.Gameplay.Characters
         public void Initialize(
             int startHealth,
             int maxHealth,
-            IPositionAttack attack,
+            IAttack attack,
             float moveSpeed,
             float moveSmooth,
             float rotateSpeed,
-            TeamsType teamType)
+            TeamsType teamType,
+            float spawnTime)
         {
             _attack = attack;
             TeamType = teamType;
@@ -51,14 +62,23 @@ namespace _Project.Code.Runtime.Gameplay.Characters
                 GetComponent<Rigidbody>(),
                 rotateSpeed);
 
+            _spawnProcess = new Process(spawnTime);
+            
             _isDeathSubscription = _health.IsDead.Subscribe(isDead => {
                 if (isDead)
                     Destroy(gameObject);
             });
+
+            _initialized.Value = true;
+            
+            StartCoroutine(_spawnProcess.StartProcess(() => _spawned.Value = true));
         }
 
         public bool CanTakeDamage(int healAmount)
         {
+            if (_spawned.Value == false)
+                return false;
+            
             return _health.CanTakeDamage(healAmount);
         }
 
@@ -69,17 +89,28 @@ namespace _Project.Code.Runtime.Gameplay.Characters
 
         public void Attack(Vector3 position)
         {
+            if (_spawned.Value == false)
+                return;
+            
+            _meleeAttacked?.Invoke(position);
+            
             _attack.Attack(position);
             _health.Kill();
         }
 
         public void Move(Vector3 direction, float deltaTime)
         {
+            if (_spawned.Value == false)
+                return;
+            
             _rigidbodyMover.Move(direction, deltaTime);
         }
 
         public void Rotate(Vector3 direction, float deltaTime)
         {
+            if (_spawned.Value == false)
+                return;
+            
             _rigidbodyRotator.Rotate(direction, deltaTime);
         }
         
@@ -92,7 +123,7 @@ namespace _Project.Code.Runtime.Gameplay.Characters
         {
             return _blackboard.TryGetData(key, out data);
         }
-
+        
         private void OnDestroy()
         {
             _isDeathSubscription.Dispose();

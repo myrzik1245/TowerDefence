@@ -2,7 +2,6 @@
 using _Project.Code.Runtime.Utility.Extensions;
 using _Project.Code.Runtime.Utility.InputService;
 using _Project.Code.Runtime.Utility.StateMachineCore.States;
-using UnityEngine;
 
 namespace _Project.Code.Runtime.Gameplay.AI.States
 {
@@ -17,10 +16,13 @@ namespace _Project.Code.Runtime.Gameplay.AI.States
             _inputService = inputService;
         }
 
+        public override void Enter()
+        {
+            _positionAttack.Attack(VectorExtensions.CameraToWorldPoint(_inputService.MousePosition));
+        }
+        
         public void Update(float deltaTime)
         {
-            if (_inputService.Attack.Down)
-                _positionAttack.Attack(VectorExtensions.CameraToWorldPoint(_inputService.MousePosition));
         }
     }
 }

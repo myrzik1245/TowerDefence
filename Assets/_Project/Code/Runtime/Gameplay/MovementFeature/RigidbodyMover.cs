@@ -26,9 +26,9 @@ namespace _Project.Code.Runtime.Gameplay.MovementFeature
 
         public void Move(Vector3 direction, float deltaTime)
         {
-            Vector3 velocity = direction * _speed;
-            _rigidbody.velocity = Vector3.Lerp(_rigidbody.velocity, velocity, deltaTime * _smooth);
             _direction.Value = direction;
+            Vector3 velocity = _direction.Value * _speed;
+            _rigidbody.velocity = Vector3.Lerp(_rigidbody.velocity, velocity, deltaTime * _smooth);
             _position.Value = _rigidbody.position;
         }
     }

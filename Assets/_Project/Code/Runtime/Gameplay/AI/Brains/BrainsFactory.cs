@@ -20,13 +20,12 @@ namespace _Project.Code.Runtime.Gameplay.AI.Brains
 
         public IBrain CreateBomberAIBrain(Bomber bomber)
         {
-            MoveToTargetState moveToTargetState = new MoveToTargetState(bomber, bomber);
-            RotateAlongMovementDirectionState rotateAlongMovementDirectionState
-                = new RotateAlongMovementDirectionState(bomber, bomber);
+            MoveToTargetState moveToTargetState = new(bomber, bomber);
+            RotateAlongMovementDirectionState rotateAlongMovementDirectionState = new(bomber, bomber);
             
-            ExplosionState explosionState = new ExplosionState(bomber, bomber, bomber);
+            ExplosionState explosionState = new(bomber, bomber, bomber);
 
-            AIParallelState moveParallelState = new AIParallelState(
+            AIParallelState moveParallelState = new(
                 moveToTargetState,
                 rotateAlongMovementDirectionState);
             
@@ -40,7 +39,7 @@ namespace _Project.Code.Runtime.Gameplay.AI.Brains
                     return false;
                 }));
             
-            AIStateMachine stateMachine = new AIStateMachine();
+            AIStateMachine stateMachine = new();
 
             stateMachine
                 .AddState(moveParallelState)
@@ -58,11 +57,24 @@ namespace _Project.Code.Runtime.Gameplay.AI.Brains
         
         public IBrain CreateInputTowerBrain(Tower tower)
         {
-            PositionAttackState positionAttackState = new PositionAttackState(tower, _inputService);
+            EmptyState emptyState = new();
+            PositionAttackState positionAttackState = new(tower, _inputService);
+
+            ICondition emptyToAttack = new CompositeCondition(
+                new FuncCondition(() => _inputService.Attack.Down));
+
+            ICondition attackToEmpty = new CompositeCondition(
+                new FuncCondition(() => _inputService.Attack.Down == false));
             
-            AIStateMachine stateMachine = new AIStateMachine();
+            AIStateMachine stateMachine = new();
+            
             stateMachine
+                .AddState(emptyState)
                 .AddState(positionAttackState);
+
+            stateMachine
+                .AddTransition(emptyState, positionAttackState, emptyToAttack)
+                .AddTransition(positionAttackState, emptyState, attackToEmpty);
             
             IBrain brain = new StateMachineBrain(stateMachine);
             

@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: TowerConfig
   m_EditorClassIdentifier: 
   <PrefabPath>k__BackingField: Gameplay/Characters/Tower
+  <SpawnTime>k__BackingField: 0.5
+  <AttackTime>k__BackingField: 1
   <HealthConfigData>k__BackingField:
     <StartHealth>k__BackingField: 2
     <MaxHealth>k__BackingField: 10
