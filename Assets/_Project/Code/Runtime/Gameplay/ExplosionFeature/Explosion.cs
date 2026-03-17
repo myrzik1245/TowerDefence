@@ -1,4 +1,5 @@
-﻿using _Project.Code.Runtime.Gameplay.ExplosionFeature.ExplosionEffects;
+﻿using _Project.Code.Runtime.Gameplay.AttackFeature.Exposion;
+using _Project.Code.Runtime.Gameplay.ExplosionFeature.ExplosionEffects;
 using _Project.Code.Runtime.Gameplay.TeamFeature;
 using _Project.Code.Runtime.Utility.Reactive.Event;
 using System.Collections.Generic;
@@ -6,13 +7,13 @@ using UnityEngine;
 
 namespace _Project.Code.Runtime.Gameplay.ExplosionFeature
 {
-    public class Explosion
+    public class Explosion : IExplosion
     {
         private readonly IExplosionEffect _effect;
         private readonly float _radius;
         private readonly ReactiveEvent<Vector3> _executed = new();
 
-        public IReadOnlyReactiveEvent<Vector3> Executed => _executed;
+        public IReadOnlyReactiveEvent<Vector3> AttackExecuted => _executed;
 
         public Explosion(IExplosionEffect effect, float radius)
         {

@@ -6,9 +6,8 @@ using _Project.Code.Runtime.Utility.Reactive.Variable;
 
 namespace _Project.Code.Runtime.Gameplay.Characters
 {
-    public interface ICharacter : IDamageble, IReadOnlyHealth, ITeam, IBlackboard, IPositionProvider
+    public interface ICharacter : IDamageble, IReadOnlyHealth, ITeam, IBlackboard, IPositionProvider, IInitializableCharacter
     {
-        IReadOnlyReactiveVariable<bool> IsInitialized { get; }
         IReadOnlyReactiveVariable<bool> IsSpawned { get; }
     }
 }

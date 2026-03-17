@@ -3,6 +3,7 @@ using _Project.Code.Runtime.Enemy;
 using _Project.Code.Runtime.Gameplay.AI;
 using _Project.Code.Runtime.Gameplay.AI.Brains;
 using _Project.Code.Runtime.Gameplay.AttackFeature;
+using _Project.Code.Runtime.Gameplay.AttackFeature.Core;
 using _Project.Code.Runtime.Gameplay.Characters;
 using _Project.Code.Runtime.Gameplay.DefenceFeature;
 using _Project.Code.Runtime.Gameplay.ExplosionFeature;

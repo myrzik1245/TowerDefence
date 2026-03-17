@@ -5,12 +5,12 @@ namespace _Project.Code.Runtime.Utility.Update
 {
     public class UpdatableService : MonoBehaviour, IUpdatableService
     {
-        private readonly List<IUpdate> _updates = new List<IUpdate>();
-        private readonly List<ILateUpdate> _lateUpdates = new List<ILateUpdate>();
-        private readonly List<IFixedUpdate> _fixedUpdates = new List<IFixedUpdate>();
+        private readonly List<IUpdate> _updates = new();
+        private readonly List<ILateUpdate> _lateUpdates = new();
+        private readonly List<IFixedUpdate> _fixedUpdates = new();
 
-        private readonly List<IUpdatable> _toAdd = new List<IUpdatable>();
-        private readonly List<IUpdatable> _toRemove = new List<IUpdatable>();
+        private readonly List<IUpdatable> _toAdd = new();
+        private readonly List<IUpdatable> _toRemove = new();
 
         public void AddRequest(IUpdatable updatable)
         {

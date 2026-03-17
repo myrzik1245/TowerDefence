@@ -1,4 +1,6 @@
-﻿using _Project.Code.Runtime.Utility.Reactive.Variable;
+﻿using _Project.Code.Runtime.Utility.CoroutineManagment;
+using _Project.Code.Runtime.Utility.Reactive.Event;
+using _Project.Code.Runtime.Utility.Reactive.Variable;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -8,16 +10,25 @@ namespace _Project.Code.Runtime.Gameplay.ProcessFeature
     public class Process
     {
         private readonly float _time;
+        private readonly ICoroutinePerformer _coroutinePerformer;
         private readonly ReactiveVariable<float> _progress = new();
-        
-        public Process(float time)
+        private readonly ReactiveEvent _ended = new();
+
+        public Process(float time, ICoroutinePerformer coroutinePerformer)
         {
             _time = time;
+            _coroutinePerformer = coroutinePerformer;
         }
 
         public IReadOnlyReactiveVariable<float> Progress => _progress;
+        public IReadOnlyReactiveEvent Ended => _ended;
         
-        public IEnumerator StartProcess(Action callback)
+        public void StartProcess(Action callback)
+        {
+            _coroutinePerformer.StartPerform(Run(callback));
+        }
+
+        private IEnumerator Run(Action callback)
         {
             float elapsedTime = 0;
             
@@ -29,7 +40,7 @@ namespace _Project.Code.Runtime.Gameplay.ProcessFeature
                 yield return null;
             }
 
-            _progress.Value = 1;
+            _ended.Invoke();
             callback?.Invoke();
         }
     }

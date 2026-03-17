@@ -25,7 +25,6 @@ namespace _Project.Code.Runtime.Infrastructure.EntryPoints.SceneEntryPoints
             GameplayRegistrations.Register(container, gameplayInputArgs);
 
             _updatableService = container.Resolve<IUpdatableService>();
-            _brainsContext = container.Resolve<BrainsContext>();
             
             GameplayStatesFactory gameplayStatesFactory = container.Resolve<GameplayStatesFactory>();
             MainHeroFactory mainHeroFactory = container.Resolve<MainHeroFactory>();
@@ -34,7 +33,6 @@ namespace _Project.Code.Runtime.Infrastructure.EntryPoints.SceneEntryPoints
             
             _gameLoop = gameplayStatesFactory.CreateGameplayStateMachine();
             
-            _updatableService.AddRequest(_brainsContext);
             _updatableService.AddRequest(_gameLoop);
             
             yield break;

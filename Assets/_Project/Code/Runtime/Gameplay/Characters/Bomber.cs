@@ -1,9 +1,11 @@
 ﻿using _Project.Code.Runtime.Gameplay.AI;
-using _Project.Code.Runtime.Gameplay.AttackFeature;
+using _Project.Code.Runtime.Gameplay.AttackFeature.Core;
+using _Project.Code.Runtime.Gameplay.AttackFeature.Exposion;
 using _Project.Code.Runtime.Gameplay.HealthFeature;
 using _Project.Code.Runtime.Gameplay.MovementFeature;
 using _Project.Code.Runtime.Gameplay.ProcessFeature;
 using _Project.Code.Runtime.Gameplay.TeamFeature;
+using _Project.Code.Runtime.Utility.CoroutineManagment;
 using _Project.Code.Runtime.Utility.Reactive.Event;
 using _Project.Code.Runtime.Utility.Reactive.Variable;
 using System;
@@ -12,18 +14,18 @@ using UnityEngine;
 namespace _Project.Code.Runtime.Gameplay.Characters
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class Bomber : MonoBehaviour, ICharacter, IMovable, IRotatable, IMeleeAttack
+    public class Bomber : MonoBehaviour, ICharacter, IMovable, IRotatable, IExplosion, IAttack
     {
         private Health _health;
-        private IAttack _attack;
+        private ExplosionAttack _attack;
         private RigidbodyMover _rigidbodyMover;
         private RigidbodyRotator _rigidbodyRotator;
         private Process _spawnProcess;
+        private ICoroutinePerformer _coroutinePerformer;
         
         private readonly Blackboard _blackboard = new();
         private readonly ReactiveVariable<bool> _initialized = new();
         private readonly ReactiveVariable<bool> _spawned = new();
-        private readonly ReactiveEvent<Vector3> _meleeAttacked = new();
 
         public IReadOnlyReactiveVariable<bool> IsDead => _health.IsDead;
         public IReadOnlyReactiveVariable<int> CurrentHealth => _health.CurrentHealth;
@@ -33,21 +35,24 @@ namespace _Project.Code.Runtime.Gameplay.Characters
         public IReadOnlyReactiveVariable<Quaternion> Rotation => _rigidbodyRotator.Rotation;
         public IReadOnlyReactiveVariable<bool> IsInitialized => _initialized;
         public IReadOnlyReactiveVariable<bool> IsSpawned => _spawned;
-        public IReadOnlyReactiveEvent<Vector3> MeleeAttacked => _meleeAttacked;
+        public IReadOnlyReactiveEvent<Vector3> AttackExecuted => _attack.AttackExecuted;
+        
         public TeamsType TeamType { get; private set; }
 
         private IDisposable _isDeathSubscription;
 
         public void Initialize(
+            ICoroutinePerformer coroutinePerformer,
             int startHealth,
             int maxHealth,
-            IAttack attack,
+            ExplosionAttack attack,
             float moveSpeed,
             float moveSmooth,
             float rotateSpeed,
             TeamsType teamType,
             float spawnTime)
         {
+            _coroutinePerformer = coroutinePerformer;
             _attack = attack;
             TeamType = teamType;
 
@@ -62,7 +67,7 @@ namespace _Project.Code.Runtime.Gameplay.Characters
                 GetComponent<Rigidbody>(),
                 rotateSpeed);
 
-            _spawnProcess = new Process(spawnTime);
+            _spawnProcess = new Process(spawnTime, _coroutinePerformer);
             
             _isDeathSubscription = _health.IsDead.Subscribe(isDead => {
                 if (isDead)
@@ -71,7 +76,7 @@ namespace _Project.Code.Runtime.Gameplay.Characters
 
             _initialized.Value = true;
             
-            StartCoroutine(_spawnProcess.StartProcess(() => _spawned.Value = true));
+            _spawnProcess.StartProcess(() => _spawned.Value = true);
         }
 
         public bool CanTakeDamage(int healAmount)
@@ -91,8 +96,6 @@ namespace _Project.Code.Runtime.Gameplay.Characters
         {
             if (_spawned.Value == false)
                 return;
-            
-            _meleeAttacked?.Invoke(position);
             
             _attack.Attack(position);
             _health.Kill();

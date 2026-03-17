@@ -1,8 +1,11 @@
 ﻿using _Project.Code.Runtime.Gameplay.AI;
 using _Project.Code.Runtime.Gameplay.AttackFeature;
+using _Project.Code.Runtime.Gameplay.AttackFeature.Core;
+using _Project.Code.Runtime.Gameplay.AttackFeature.PositionAttack;
 using _Project.Code.Runtime.Gameplay.HealthFeature;
 using _Project.Code.Runtime.Gameplay.ProcessFeature;
 using _Project.Code.Runtime.Gameplay.TeamFeature;
+using _Project.Code.Runtime.Utility.CoroutineManagment;
 using _Project.Code.Runtime.Utility.Reactive.Event;
 using _Project.Code.Runtime.Utility.Reactive.Variable;
 using System;
@@ -19,11 +22,12 @@ namespace _Project.Code.Runtime.Gameplay.Characters
         private ReactiveVariable<Vector3> _position;
         private Process _spawnProcess;
         private float _attackTime;
+        private ICoroutinePerformer _coroutinePerformer;
 
         private readonly Blackboard _blackboard = new();
         private readonly ReactiveVariable<bool> _initialized = new();
         private readonly ReactiveVariable<bool> _spawned = new();
-        private readonly ReactiveEvent<PositionAttackProcess> _attacked = new();
+        private readonly ReactiveEvent<PositionAttackProcess> _positionAttacked = new();
 
         public TeamsType TeamType { get; private set; }
         public IReadOnlyReactiveVariable<bool> IsDead => _health.IsDead;
@@ -32,11 +36,12 @@ namespace _Project.Code.Runtime.Gameplay.Characters
         public IReadOnlyReactiveVariable<Vector3> Position => _position;
         public IReadOnlyReactiveVariable<bool> IsInitialized => _initialized;
         public IReadOnlyReactiveVariable<bool> IsSpawned => _spawned;
-        public IReadOnlyReactiveEvent<PositionAttackProcess> Attacked => _attacked;
+        public IReadOnlyReactiveEvent<PositionAttackProcess> PositionAttacked => _positionAttacked;
 
         private IDisposable _disposable;
         
         public void Initialize(
+            ICoroutinePerformer coroutinePerformer,
             int startHealth,
             int maxHealth,
             IAttack attack,
@@ -47,10 +52,11 @@ namespace _Project.Code.Runtime.Gameplay.Characters
             _attack = attack;
             TeamType = teamType;
             _attackTime = attackTime;
+            _coroutinePerformer = coroutinePerformer;
             _health = new Health(startHealth, maxHealth);
             _position = new ReactiveVariable<Vector3>(transform.position);
 
-            _spawnProcess = new Process(spawnTime);
+            _spawnProcess = new Process(spawnTime, _coroutinePerformer);
             
             _disposable = _health.IsDead.Subscribe(isDead =>
             {
@@ -59,8 +65,8 @@ namespace _Project.Code.Runtime.Gameplay.Characters
             });
             
             _initialized.Value = true;
-            
-            StartCoroutine(_spawnProcess.StartProcess(() => _spawned.Value = true));
+
+            _spawnProcess.StartProcess(() => _spawned.Value = true);
         }
 
         public bool CanTakeDamage(int healAmount)
@@ -91,9 +97,9 @@ namespace _Project.Code.Runtime.Gameplay.Characters
             if (_spawned.Value == false)
                 return;
 
-            PositionAttackProcess attackProcess = new(_shootPoint.position, position, _attackTime);
-            _attacked.Invoke(attackProcess);
-            StartCoroutine(attackProcess.StartProcess(() => _attack.Attack(position)));
+            PositionAttackProcess attackProcess = new(_coroutinePerformer, _shootPoint.position, position, _attackTime);
+            _positionAttacked.Invoke(attackProcess);
+            attackProcess.StartProcess(() => _attack.Attack(position));
         }
         
         public void WriteData(string key, object value)

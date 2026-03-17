@@ -1,4 +1,5 @@
 ﻿using _Project.Code.Runtime.Data.Player;
+using _Project.Code.Runtime.Gameplay.AI.Brains;
 using _Project.Code.Runtime.Gameplay.DefenceFeature;
 using _Project.Code.Runtime.Gameplay.GameLoop.States;
 using _Project.Code.Runtime.Gameplay.MainHero;
@@ -28,6 +29,7 @@ namespace _Project.Code.Runtime.Gameplay.GameLoop
         private readonly Wallet _wallet;
         private readonly WinLoseCounter _winLoseCounter;
         private readonly PlayerDataProvider _playerDataProvider;
+        private readonly BrainsContext _brainsContext;
         
         public GameplayStatesFactory(DIContainer container, GameplayInputArgs gameplayInputArgs)
         {
@@ -41,6 +43,7 @@ namespace _Project.Code.Runtime.Gameplay.GameLoop
             _wallet = container.Resolve<Wallet>();
             _winLoseCounter = container.Resolve<WinLoseCounter>();
             _playerDataProvider = container.Resolve<PlayerDataProvider>();
+            _brainsContext = container.Resolve<BrainsContext>();
             
             _gameplayInputArgs = gameplayInputArgs;
         }
@@ -88,7 +91,7 @@ namespace _Project.Code.Runtime.Gameplay.GameLoop
 
         private GameplayStateMachine CreateGameLoop()
         {
-            StageState stageState = new StageState(_stageService);
+            StageState stageState = new StageState(_stageService, _brainsContext);
             
             PreparationState preparationState = new PreparationState(
                 _inputService,

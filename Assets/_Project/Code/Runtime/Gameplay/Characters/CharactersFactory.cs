@@ -1,7 +1,9 @@
 ﻿using _Project.Code.Runtime.Configs.Characters;
 using _Project.Code.Runtime.Gameplay.AttackFeature;
+using _Project.Code.Runtime.Gameplay.AttackFeature.Core;
 using _Project.Code.Runtime.Gameplay.TeamFeature;
 using _Project.Code.Runtime.Utility.AssetsManagment;
+using _Project.Code.Runtime.Utility.CoroutineManagment;
 using _Project.Code.Runtime.Utility.DI;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -12,11 +14,13 @@ namespace _Project.Code.Runtime.Gameplay.Characters
     {
         private readonly ResourcesAssetsLoader _resourcesAssetsLoader;
         private readonly AttackFactory _attackFactory;
+        private readonly ICoroutinePerformer _coroutinePerformer;
 
         public CharactersFactory(DIContainer container)
         {
             _resourcesAssetsLoader = container.Resolve<ResourcesAssetsLoader>();
             _attackFactory = container.Resolve<AttackFactory>();
+            _coroutinePerformer = container.Resolve<ICoroutinePerformer>();
         }
         
         public Tower CreateTower(TowerConfig towerConfig, Vector3 position, TeamsType teamType)
@@ -24,6 +28,7 @@ namespace _Project.Code.Runtime.Gameplay.Characters
             Tower prefab = _resourcesAssetsLoader.Load<Tower>(towerConfig.PrefabPath);
             Tower instance = Object.Instantiate(prefab, position, Quaternion.identity);
             instance.Initialize(
+                _coroutinePerformer,
                 towerConfig.HealthConfigData.StartHealth,
                 towerConfig.HealthConfigData.MaxHealth,
                 _attackFactory.CreateExplosionAttack(
@@ -42,6 +47,7 @@ namespace _Project.Code.Runtime.Gameplay.Characters
             Bomber instance = Object.Instantiate(prefab, position, Quaternion.identity);
 
             instance.Initialize(
+                _coroutinePerformer,
                 bomberConfig.HealthConfigData.StartHealth,
                 bomberConfig.HealthConfigData.MaxHealth,
                 _attackFactory.CreateExplosionAttack(

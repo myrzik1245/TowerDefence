@@ -10,7 +10,7 @@ namespace _Project.Code.Runtime.Gameplay.ViewCore
 
         private void Awake()
         {
-            ICharacter character = GetComponent<ICharacter>();
+            IInitializableCharacter character = GetComponent<IInitializableCharacter>();
 
             _initializedSubscription = character.IsInitialized.Subscribe(OnInitialized);
         }
