@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Explosion>k__BackingField: {fileID: 11400000, guid: 17a8fbb7c71871c45b5d0f0dbcb0291e,
     type: 2}
-  <Radius>k__BackingField: 1.5
+  <Radius>k__BackingField: 1

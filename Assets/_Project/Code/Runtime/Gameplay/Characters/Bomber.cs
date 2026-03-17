@@ -81,9 +81,6 @@ namespace _Project.Code.Runtime.Gameplay.Characters
 
         public bool CanTakeDamage(int healAmount)
         {
-            if (_spawned.Value == false)
-                return false;
-            
             return _health.CanTakeDamage(healAmount);
         }
 

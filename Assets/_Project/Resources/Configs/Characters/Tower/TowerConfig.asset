@@ -16,7 +16,7 @@ MonoBehaviour:
   <SpawnTime>k__BackingField: 0.5
   <AttackTime>k__BackingField: 1
   <HealthConfigData>k__BackingField:
-    <StartHealth>k__BackingField: 2
+    <StartHealth>k__BackingField: 10
     <MaxHealth>k__BackingField: 10
     <ClampHealth>k__BackingField: 1
   <ExplosionConfig>k__BackingField: {fileID: 11400000, guid: 1f55fd1d3570d4643a0c26631f120fc2,
