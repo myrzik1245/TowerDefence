@@ -1,7 +1,7 @@
-﻿using _Project.Code.Runtime.Meta.WinLoseFeature;
-using _Project.Code.Runtime.UI.CommonViews;
+﻿using _Project.Code.Runtime.UI.CommonViews;
 using _Project.Code.Runtime.UI.Core;
 using _Project.Code.Runtime.UI.Factories;
+using _Project.Code.Runtime.UI.Factories.Presenters;
 using _Project.Code.Runtime.UI.MainMenu;
 using _Project.Code.Runtime.UI.Walet;
 using _Project.Code.Runtime.UI.WinLose;
@@ -21,8 +21,19 @@ namespace _Project.Code.Runtime.Infrastructure.Registrations
             mainMenuContainer.Register(CreateMainMenuPresentersFactory).AsSingle();
             mainMenuContainer.Register(CreateWalletPresenter).AsSingle().NonLazy();
             mainMenuContainer.Register(CreateWinLosePresenter).AsSingle().NonLazy();
-
+            mainMenuContainer.Register(CreateMainMenuPopupService).AsSingle().NonLazy();
+            
             mainMenuContainer.Initialize();
+        }
+        
+        private static MainMenuPopupService CreateMainMenuPopupService(DIContainer c)
+        {
+            UIRoot uiRoot = c.Resolve<UIRoot>();
+            
+            return new MainMenuPopupService(
+                c.Resolve<ViewsFactory>(),
+                c.Resolve<ProjectPresentersFactory>(),
+                uiRoot.PopupsLayer);
         }
 
         private static WinLosePresenter CreateWinLosePresenter(DIContainer c)

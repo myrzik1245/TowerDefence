@@ -15,6 +15,7 @@ namespace _Project.Code.Runtime.UI.Factories
         private readonly Dictionary<string, string> _pathsMap = new Dictionary<string, string>()
         {
             { ViewIDs.MainMenu, "UI/MainMenu/MainMenuView" },
+            { ViewIDs.ConfirmPopup, "UI/Popups/ConfirmPopup" },
         };
 
         public ViewsFactory(DIContainer container)

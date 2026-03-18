@@ -8,7 +8,7 @@ using _Project.Code.Runtime.Utility.CoroutineManagment;
 using _Project.Code.Runtime.Utility.DI;
 using _Project.Code.Runtime.Utility.SceneManagment;
 
-namespace _Project.Code.Runtime.UI.Factories
+namespace _Project.Code.Runtime.UI.Factories.Presenters
 {
     public class MainMenuPresentersFactory
     {
