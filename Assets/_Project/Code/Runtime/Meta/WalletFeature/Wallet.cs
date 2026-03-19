@@ -1,54 +1,52 @@
 ﻿using _Project.Code.Runtime.Data.Player;
-using _Project.Code.Runtime.Utility.DataManagment.DataProviders;
-using _Project.Code.Runtime.Utility.Reactive.Variable;
+using _Project.Code.Runtime.Meta.WalletFeature.Slot;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace _Project.Code.Runtime.Meta.WalletFeature
 {
-    public class Wallet : IReadOnlyWallet, IDataWriter<PlayerData>, IDataReader<PlayerData>
+    public class Wallet : IReadOnlyWallet
     {
-        private readonly ReactiveVariable<int> _balance = new();
+        private List<WalletSlot> _slots = new();
+        public IReadOnlyList<IReadOnlyWalletSlot> Slots => _slots;
 
-        public Wallet(PlayerDataProvider playerData)
+        public Wallet(PlayerDataProvider playerDataProvider)
         {
-            playerData.RegisterWriter(this);
-            playerData.RegisterReader(this);
+            foreach (CurrencyType currencyType in Enum.GetValues(typeof(CurrencyType)))
+                _slots.Add(new WalletSlot(currencyType, playerDataProvider));
         }
         
-        public IReadOnlyReactiveVariable<int> Balance => _balance;
-
-        public bool Enough(int amount)
+        public bool Enough(CurrencyType currencyType, int amount)
         {
-            return _balance.Value - amount >= 0;
+            WalletSlot slot = GetSlot(currencyType);
+                
+            return slot.Enough(amount);
         }
-        
-        public void Spend(int amount)
+
+        public void Spend(CurrencyType currencyType, int amount)
         {
-            if (Enough(amount) == false)
+            if (Enough(currencyType, amount) == false)
                 throw new InvalidOperationException();
-            
-            if (amount < 0)
-                throw new ArgumentOutOfRangeException(nameof(amount));
-            
-            _balance.Value -= amount;
+
+            WalletSlot slot = GetSlot(currencyType);
+
+            slot.Spend(amount);
         }
 
-        public void Add(int amount)
+        public void Add(CurrencyType currencyType, int amount)
         {
             if (amount < 0)
-                throw new ArgumentOutOfRangeException(nameof(amount));
-            
-            _balance.Value += amount;
+                throw new InvalidOperationException();
+
+            WalletSlot slot = GetSlot(currencyType);
+
+            slot.Add(amount);
         }
-        
-        public void WriteTo(PlayerData data)
+
+        private WalletSlot GetSlot(CurrencyType currencyType)
         {
-            data.Balance = _balance.Value;
-        }
-        
-        public void ReadFrom(PlayerData data)
-        {
-            _balance.Value = data.Balance;
+            return _slots.First(s => s.CurrencyType == currencyType);
         }
     }
 }

@@ -1,8 +1,10 @@
-﻿namespace _Project.Code.Runtime.UI.Core.Popup
+﻿using DG.Tweening;
+
+namespace _Project.Code.Runtime.UI.Core.Popup
 {
     public interface IPopupView : IView
     {
-        void Show();
-        void Hide();
+        Tween Show();
+        Tween Hide();
     }
 }

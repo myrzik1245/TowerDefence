@@ -1,8 +1,6 @@
 ﻿using _Project.Code.Runtime.Configs.Level;
 using _Project.Code.Runtime.Enemy;
-using _Project.Code.Runtime.Gameplay.AI;
 using _Project.Code.Runtime.Gameplay.AI.Brains;
-using _Project.Code.Runtime.Gameplay.AttackFeature;
 using _Project.Code.Runtime.Gameplay.AttackFeature.Core;
 using _Project.Code.Runtime.Gameplay.Characters;
 using _Project.Code.Runtime.Gameplay.DefenceFeature;
@@ -11,9 +9,15 @@ using _Project.Code.Runtime.Gameplay.GameLoop;
 using _Project.Code.Runtime.Gameplay.MainHero;
 using _Project.Code.Runtime.Gameplay.SpawnerFeature;
 using _Project.Code.Runtime.Gameplay.StageFeature;
+using _Project.Code.Runtime.UI.Core;
+using _Project.Code.Runtime.UI.Factories;
+using _Project.Code.Runtime.UI.Factories.Presenters;
+using _Project.Code.Runtime.UI.Gameplay;
+using _Project.Code.Runtime.Utility.AssetsManagment;
 using _Project.Code.Runtime.Utility.ConfigManagment;
 using _Project.Code.Runtime.Utility.DI;
 using _Project.Code.Runtime.Utility.SceneManagment.SceneInputArgs;
+using UnityEngine;
 
 namespace _Project.Code.Runtime.Infrastructure.Registrations
 {
@@ -38,10 +42,39 @@ namespace _Project.Code.Runtime.Infrastructure.Registrations
             gameplayContainer.Register(CreateGameplayStatesFactory).AsSingle();
             gameplayContainer.Register(CreateDefenceObjectsFactory).AsSingle();
             gameplayContainer.Register(CreateMainHeroService).AsSingle();
+            gameplayContainer.Register(CreateGameplayPresentersFactory).AsSingle();
+            gameplayContainer.Register(CreateGameplayPopupService).AsSingle();
+            gameplayContainer.Register(CreateUIRoot).AsSingle();
 
             gameplayContainer.Initialize();
         }
 
+        private static UIRoot CreateUIRoot(DIContainer c)
+        {
+            ResourcesAssetsLoader resourceLoader = c.Resolve<ResourcesAssetsLoader>();
+            UIRoot uiRootPrefab = resourceLoader.Load<UIRoot>("UI/UIRoot");
+
+            return Object.Instantiate(uiRootPrefab);            
+        }
+        
+        private static GameplayPopupService CreateGameplayPopupService(DIContainer c)
+        {
+            UIRoot uiRoot = c.Resolve<UIRoot>();
+            
+            return new GameplayPopupService(
+                c.Resolve<ViewsFactory>(),
+                c.Resolve<ProjectPresentersFactory>(),
+                uiRoot.PopupsLayer,
+                c.Resolve<GameplayPresentersFactory>());
+        }
+
+        private static GameplayPresentersFactory CreateGameplayPresentersFactory(DIContainer c)
+        {
+            return new GameplayPresentersFactory(
+                c,
+                _gameplayInputArgs);
+        }
+        
         private static MainHeroService CreateMainHeroService(DIContainer c)
         {
             return new MainHeroService(
@@ -55,9 +88,7 @@ namespace _Project.Code.Runtime.Infrastructure.Registrations
         
         private static GameplayStatesFactory CreateGameplayStatesFactory(DIContainer c)
         {
-            return new GameplayStatesFactory(
-                c,
-                _gameplayInputArgs);
+            return new GameplayStatesFactory(c);
         }
         
         private static StageService CreateStageService(DIContainer c)

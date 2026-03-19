@@ -6,12 +6,12 @@ using _Project.Code.Runtime.Gameplay.MainHero;
 using _Project.Code.Runtime.Gameplay.StageFeature;
 using _Project.Code.Runtime.Meta.WalletFeature;
 using _Project.Code.Runtime.Meta.WinLoseFeature;
+using _Project.Code.Runtime.UI.Gameplay;
 using _Project.Code.Runtime.Utility.Conditions;
 using _Project.Code.Runtime.Utility.ConfigManagment;
 using _Project.Code.Runtime.Utility.CoroutineManagment;
 using _Project.Code.Runtime.Utility.DI;
 using _Project.Code.Runtime.Utility.InputService;
-using _Project.Code.Runtime.Utility.SceneManagment;
 using _Project.Code.Runtime.Utility.SceneManagment.SceneInputArgs;
 
 namespace _Project.Code.Runtime.Gameplay.GameLoop
@@ -23,29 +23,26 @@ namespace _Project.Code.Runtime.Gameplay.GameLoop
         private readonly DefenceObjectsFactory _defenceObjectsFactory;
         private readonly ConfigsProvider _configsProvider;
         private readonly ICoroutinePerformer _coroutinePerformer;
-        private readonly LoadSceneService _loadSceneService;
         private readonly MainHeroService _mainHeroService;
-        private readonly GameplayInputArgs _gameplayInputArgs;
         private readonly Wallet _wallet;
         private readonly WinLoseCounter _winLoseCounter;
         private readonly PlayerDataProvider _playerDataProvider;
         private readonly BrainsContext _brainsContext;
+        private readonly GameplayPopupService _gameplayPopupService;
         
-        public GameplayStatesFactory(DIContainer container, GameplayInputArgs gameplayInputArgs)
+        public GameplayStatesFactory(DIContainer container)
         {
             _stageService = container.Resolve<StageService>();
             _inputService = container.Resolve<IInputService>();
             _defenceObjectsFactory = container.Resolve<DefenceObjectsFactory>();
             _configsProvider = container.Resolve<ConfigsProvider>();
             _coroutinePerformer = container.Resolve<ICoroutinePerformer>();
-            _loadSceneService = container.Resolve<LoadSceneService>();
             _mainHeroService = container.Resolve<MainHeroService>();
             _wallet = container.Resolve<Wallet>();
             _winLoseCounter = container.Resolve<WinLoseCounter>();
             _playerDataProvider = container.Resolve<PlayerDataProvider>();
             _brainsContext = container.Resolve<BrainsContext>();
-            
-            _gameplayInputArgs = gameplayInputArgs;
+            _gameplayPopupService = container.Resolve<GameplayPopupService>();
         }
 
         public GameplayStateMachine CreateGameplayStateMachine()
@@ -53,20 +50,20 @@ namespace _Project.Code.Runtime.Gameplay.GameLoop
             GameplayStateMachine gameLoopStateMachine = CreateGameLoop();
 
             LoseState loseState = new LoseState(
-                _loadSceneService,
+                _gameplayPopupService,
+                "Помер!",
                 _coroutinePerformer,
-                _gameplayInputArgs,
                 _playerDataProvider,
                 _winLoseCounter);
 
             WinState winState = new WinState(
-                _loadSceneService,
-                _coroutinePerformer,
-                _gameplayInputArgs,
-                _playerDataProvider,
+                _gameplayPopupService,
+                "Молодец",
                 _wallet,
                 _configsProvider,
-                _winLoseCounter);
+                _winLoseCounter,
+                _playerDataProvider,
+                _coroutinePerformer);
             
             ICondition gameLoopToLose = new CompositeCondition(
                 new FuncCondition(() => _mainHeroService.MainHero.IsDead.Value));

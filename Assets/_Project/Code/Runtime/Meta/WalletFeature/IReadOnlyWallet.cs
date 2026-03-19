@@ -1,9 +1,10 @@
-﻿using _Project.Code.Runtime.Utility.Reactive.Variable;
+﻿using _Project.Code.Runtime.Meta.WalletFeature.Slot;
+using System.Collections.Generic;
 
 namespace _Project.Code.Runtime.Meta.WalletFeature
 {
     public interface IReadOnlyWallet
     {
-        IReadOnlyReactiveVariable<int> Balance { get; }
+        IReadOnlyList<IReadOnlyWalletSlot> Slots { get; }
     }
 }

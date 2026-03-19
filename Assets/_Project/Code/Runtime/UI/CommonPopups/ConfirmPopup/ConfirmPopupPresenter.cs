@@ -1,4 +1,5 @@
 ﻿using _Project.Code.Runtime.UI.Core.Popup;
+using _Project.Code.Runtime.Utility.CoroutineManagment;
 using System;
 using System.Collections.Generic;
 
@@ -15,9 +16,12 @@ namespace _Project.Code.Runtime.UI.CommonPopups.ConfirmPopup
         private readonly List<IDisposable> _subscriptions = new();
         
         public ConfirmPopupPresenter(
+            ICoroutinePerformer coroutinePerformer,
             ConfirmPopupView view,
             string title,
-            string message, Action onConfirm, Action onCancel = null) : base(view)
+            string message,
+            Action onConfirm,
+            Action onCancel = null) : base(view, coroutinePerformer)
         {
             _view = view;
             _title = title;

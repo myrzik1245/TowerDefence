@@ -34,14 +34,14 @@ namespace _Project.Code.Runtime.Gameplay.GameLoop.States
                 MineConfig mineConfig = _configs.GetConfig<MineConfig>();
                 int price = _configs.GetConfig<ShopConfig>().GetPrice(mineConfig);
                 
-                if (_wallet.Enough(price))
+                if (_wallet.Enough(CurrencyType.Soft, price))
                 {
                     _defenceObjectsFactory.CreateMine(
                         VectorExtensions.CameraToWorldPoint(_inputService.MousePosition),
                         mineConfig,
                         TeamsType.Player);
                     
-                    _wallet.Spend(price);
+                    _wallet.Spend(CurrencyType.Soft, price);
                 }
             }
 

@@ -1,8 +1,6 @@
 ﻿using _Project.Code.Runtime.Meta.WalletFeature;
 using _Project.Code.Runtime.Meta.WinLoseFeature;
-using _Project.Code.Runtime.UI.CommonViews;
 using _Project.Code.Runtime.UI.MainMenu;
-using _Project.Code.Runtime.UI.Walet;
 using _Project.Code.Runtime.UI.WinLose;
 using _Project.Code.Runtime.Utility.CoroutineManagment;
 using _Project.Code.Runtime.Utility.DI;
@@ -32,13 +30,7 @@ namespace _Project.Code.Runtime.UI.Factories.Presenters
                 _coroutinePerformer,
                 view);
         }
-
-        public WalletPresenter CreateWalletPresenter(NumberView view)
-        {
-            return new WalletPresenter(
-                _wallet,
-                view);
-        }
+        
         public WinLosePresenter CreateWinLoseCounter(WinLoseView view)
         {
             return new WinLosePresenter(

@@ -48,8 +48,8 @@ namespace _Project.Code.Runtime.Infrastructure.Registrations
         private static WalletPresenter CreateWalletPresenter(DIContainer c)
         {
             MainMenuView mainMenuView = c.Resolve<MainMenuView>();
-            MainMenuPresentersFactory presentersFactory = c.Resolve<MainMenuPresentersFactory>();
-            NumberView view = mainMenuView.WalletView;
+            ProjectPresentersFactory presentersFactory = c.Resolve<ProjectPresentersFactory>();
+            WalletView view = mainMenuView.WalletView;
             
             return presentersFactory.CreateWalletPresenter(view);
         }

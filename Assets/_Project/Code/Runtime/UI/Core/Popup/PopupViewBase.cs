@@ -6,31 +6,39 @@ namespace _Project.Code.Runtime.UI.Core.Popup
 {
     public class PopupViewBase : MonoBehaviour, IPopupView
     {
-        [SerializeField] private Transform _anticlicker;
-        [SerializeField] private Transform _body;
+        [SerializeField] private CanvasGroup _anticlicker;
+        [SerializeField] private CanvasGroup _body;
 
         private readonly ReactiveEvent _closeRequest = new();
         
         public IReadOnlyReactiveEvent CloseRequest => _closeRequest;
         
-        public void Show()
+        public Tween Show()
         {
             OnPreShow();
             
-            Sequence animation = DOTween.Sequence();
-            ModifieShowAnimation(animation);
+            Sequence showAnimation = DOTween.Sequence();
+            ModifiedShowAnimation(showAnimation);
+
+            showAnimation.OnComplete(OnPostShow);
             
-            animation.OnComplete(OnPostShow);
+            showAnimation.Play();
+            
+            return showAnimation;
         }
         
-        public void Hide()
+        public Tween Hide()
         {
             OnPreHide();
             
-            Sequence animation = DOTween.Sequence();
-            ModifieHideAnimation(animation);
+            Sequence hideAnimation = DOTween.Sequence();
+            ModifiedHideAnimation(hideAnimation);
             
-            animation.OnComplete(OnPostHide);
+            hideAnimation.OnComplete(OnPostHide);
+            
+            hideAnimation.Play();
+            
+            return hideAnimation;
         }
 
         public void OnCloseButtonCLicked()
@@ -38,12 +46,19 @@ namespace _Project.Code.Runtime.UI.Core.Popup
             _closeRequest.Invoke();
         }
         
-        protected virtual void ModifieShowAnimation(Sequence animation)
+        protected virtual void ModifiedShowAnimation(Sequence showAnimation)
         {
+            showAnimation
+                .Append(_anticlicker.DOFade(1, 0.2f).From(0))
+                .Append(_body.transform.DOScale(1, 0.2f).From(0.2f).SetEase(Ease.InOutQuad))
+                .Join(_body.DOFade(1, 0.1f).From(0));
         }
         
-        protected virtual void ModifieHideAnimation(Sequence animation)
+        protected virtual void ModifiedHideAnimation(Sequence hideAnimation)
         {
+            hideAnimation
+                .Append(_body.transform.DOScale(0, 0.3f).From(1).SetEase(Ease.InOutBack))
+                .Append(_anticlicker.DOFade(0, 0.1f).From(1));
         }
 
         protected virtual void OnPreShow()

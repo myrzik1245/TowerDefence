@@ -3,6 +3,7 @@ using _Project.Code.Runtime.Configs.Characters;
 using _Project.Code.Runtime.Configs.Level;
 using _Project.Code.Runtime.Configs.Mine;
 using _Project.Code.Runtime.Configs.Shop;
+using _Project.Code.Runtime.Configs.Wallet;
 using _Project.Code.Runtime.Utility.AssetsManagment;
 using System;
 using System.Collections;
@@ -22,6 +23,7 @@ namespace _Project.Code.Runtime.Utility.ConfigManagment.Loaders
             { typeof(MineConfig), "Configs/DefenceObjects/Mine/MineConfig" },
             { typeof(ShopConfig), "Configs/Shop/ShopConfig" },
             { typeof(BonusConfig), "Configs/Bonus/BonusConfig" },
+            { typeof(WalletConfig), "Configs/Wallet/WalletConfig" },
         };
 
         public ResourcesConfigLoader(ResourcesAssetsLoader resourcesAssetsLoader)

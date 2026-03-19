@@ -1,7 +1,4 @@
-﻿using _Project.Code.Runtime.Data.Player;
-using _Project.Code.Runtime.Utility.CoroutineManagment;
-using _Project.Code.Runtime.Utility.SceneManagment;
-using _Project.Code.Runtime.Utility.SceneManagment.SceneInputArgs;
+﻿using _Project.Code.Runtime.UI.Gameplay;
 using _Project.Code.Runtime.Utility.StateMachineCore.States;
 using UnityEngine;
 
@@ -9,27 +6,24 @@ namespace _Project.Code.Runtime.Gameplay.GameLoop.States
 {
     public abstract class EndGameState : State, IUpdatableState
     {
-        private readonly LoadSceneService _loadSceneService;
-        private readonly ICoroutinePerformer _coroutinePerformer;
-        private readonly GameplayInputArgs _gameplayInputArgs;
-        
-        protected EndGameState(
-            LoadSceneService loadSceneService,
-            ICoroutinePerformer coroutinePerformer,
-            GameplayInputArgs gameplayInputArgs)
+        private readonly GameplayPopupService _gameplayPopupService;
+        private readonly string _popupTitle;
+
+        protected EndGameState(GameplayPopupService gameplayPopupService, string popupTitle)
         {
-            _loadSceneService = loadSceneService;
-            _coroutinePerformer = coroutinePerformer;
-            _gameplayInputArgs = gameplayInputArgs;
+            _gameplayPopupService = gameplayPopupService;
+            _popupTitle = popupTitle;
         }
 
+        public override void Enter()
+        {
+            base.Enter();
+
+            _gameplayPopupService.OpenEndGamePopup(_popupTitle);
+        }
+        
         public void Update(float deltaTime)
         {
-            if (Input.GetKeyDown(KeyCode.R))
-                _coroutinePerformer.StartPerform(_loadSceneService.LoadAsync(Scenes.Gameplay, _gameplayInputArgs));
-            
-            else if (Input.GetKeyDown(KeyCode.Q))
-                _coroutinePerformer.StartPerform(_loadSceneService.LoadAsync(Scenes.MainMenu));
         }
     }
 }

@@ -16,6 +16,9 @@ namespace _Project.Code.Runtime.UI.Factories
         {
             { ViewIDs.MainMenu, "UI/MainMenu/MainMenuView" },
             { ViewIDs.ConfirmPopup, "UI/Popups/ConfirmPopup" },
+            { ViewIDs.EndGamePopup, "UI/Popups/EndGamePopup" },
+            { ViewIDs.WalletSlot, "UI/Wallet/WalletSlotView" },
+            { ViewIDs.Wallet, "UI/Wallet/WalletView" },
         };
 
         public ViewsFactory(DIContainer container)

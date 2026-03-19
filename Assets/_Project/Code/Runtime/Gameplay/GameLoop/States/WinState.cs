@@ -2,10 +2,9 @@
 using _Project.Code.Runtime.Data.Player;
 using _Project.Code.Runtime.Meta.WalletFeature;
 using _Project.Code.Runtime.Meta.WinLoseFeature;
+using _Project.Code.Runtime.UI.Gameplay;
 using _Project.Code.Runtime.Utility.ConfigManagment;
 using _Project.Code.Runtime.Utility.CoroutineManagment;
-using _Project.Code.Runtime.Utility.SceneManagment;
-using _Project.Code.Runtime.Utility.SceneManagment.SceneInputArgs;
 
 namespace _Project.Code.Runtime.Gameplay.GameLoop.States
 {
@@ -17,19 +16,20 @@ namespace _Project.Code.Runtime.Gameplay.GameLoop.States
         private readonly PlayerDataProvider _playerDataProvider;
         private readonly ICoroutinePerformer _coroutinePerformer;
 
+
         public WinState(
-            LoadSceneService loadSceneService,
-            ICoroutinePerformer coroutinePerformer,
-            GameplayInputArgs gameplayInputArgs,
-            PlayerDataProvider playerDataProvider,
+            GameplayPopupService gameplayPopupService,
+            string popupTitle,
             Wallet wallet,
             ConfigsProvider configsProvider,
-            WinLoseCounter winLoseCounter) : base(loadSceneService, coroutinePerformer, gameplayInputArgs)
+            WinLoseCounter winLoseCounter,
+            PlayerDataProvider playerDataProvider,
+            ICoroutinePerformer coroutinePerformer) : base(gameplayPopupService, popupTitle)
         {
             _wallet = wallet;
             _configsProvider = configsProvider;
             _winLoseCounter = winLoseCounter;
-            _playerDataProvider =  playerDataProvider;
+            _playerDataProvider = playerDataProvider;
             _coroutinePerformer = coroutinePerformer;
         }
         
@@ -37,7 +37,7 @@ namespace _Project.Code.Runtime.Gameplay.GameLoop.States
         {
             base.Enter();
             
-            _wallet.Add(_configsProvider.GetConfig<BonusConfig>().WinBonus);
+            _wallet.Add(CurrencyType.Soft, _configsProvider.GetConfig<BonusConfig>().WinBonus);
             _winLoseCounter.AddWin();
             
             _coroutinePerformer.StartPerform(_playerDataProvider.Save());

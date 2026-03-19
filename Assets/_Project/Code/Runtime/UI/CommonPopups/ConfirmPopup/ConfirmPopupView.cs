@@ -2,7 +2,6 @@
 using _Project.Code.Runtime.UI.Core.Popup;
 using _Project.Code.Runtime.Utility.Reactive.Event;
 using DG.Tweening;
-using TMPro;
 using UnityEngine;
 
 namespace _Project.Code.Runtime.UI.CommonPopups.ConfirmPopup
@@ -40,14 +39,22 @@ namespace _Project.Code.Runtime.UI.CommonPopups.ConfirmPopup
             _cancelButtonClicked.Invoke();
         }
 
-        protected override void ModifieShowAnimation(Sequence animation)
+        protected override void ModifiedShowAnimation(Sequence showAnimation)
         {
-            base.ModifieShowAnimation(animation);
+            base.ModifiedShowAnimation(showAnimation);
+
+            showAnimation
+                .Append(_cancelButton.DOScale(1, 0.2f).From(0))
+                .Join(_confirmButton.DOScale(1, 0.2f).From(0));
         }
 
-        protected override void ModifieHideAnimation(Sequence animation)
+        protected override void ModifiedHideAnimation(Sequence hideAnimation)
         {
-            base.ModifieHideAnimation(animation);
+            base.ModifiedHideAnimation(hideAnimation);
+
+            hideAnimation
+                .Prepend(_cancelButton.DOScale(0, 0.2f).From(1).SetEase(Ease.OutQuint))
+                .Join(_confirmButton.DOScale(0, 0.2f).From(1).SetEase(Ease.OutQuint));;
         }
     }
 }
