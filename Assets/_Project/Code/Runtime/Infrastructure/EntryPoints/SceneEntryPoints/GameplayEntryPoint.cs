@@ -23,6 +23,7 @@ namespace _Project.Code.Runtime.Infrastructure.EntryPoints.SceneEntryPoints
                 throw new ArgumentException($"Input args must be of type {nameof(GameplayInputArgs)}");
             
             GameplayRegistrations.Register(container, gameplayInputArgs);
+            container.Initialize();
 
             _updatableService = container.Resolve<IUpdatableService>();
             
@@ -48,6 +49,7 @@ namespace _Project.Code.Runtime.Infrastructure.EntryPoints.SceneEntryPoints
         {
             _updatableService.RemoveRequest(_brainsContext);
             _updatableService.RemoveRequest(_gameLoop);
+            _gameLoop.Dispose();
         }
     }
 }

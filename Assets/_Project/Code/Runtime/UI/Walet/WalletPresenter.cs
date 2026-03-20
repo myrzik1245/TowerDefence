@@ -1,8 +1,6 @@
 ﻿using _Project.Code.Runtime.Meta.WalletFeature;
 using _Project.Code.Runtime.Meta.WalletFeature.Slot;
 using _Project.Code.Runtime.UI.Core;
-using _Project.Code.Runtime.UI.Factories;
-using _Project.Code.Runtime.UI.Factories.Presenters;
 using _Project.Code.Runtime.UI.Walet.Slot;
 using System.Collections.Generic;
 

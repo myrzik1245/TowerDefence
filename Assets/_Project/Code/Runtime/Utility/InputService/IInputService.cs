@@ -7,5 +7,6 @@ namespace _Project.Code.Runtime.Utility.InputService
         Vector2 MousePosition { get; }
         IKey Attack { get; }
         IKey Continue { get; }
+        bool IsCursorOverUI { get; }
     }
 }

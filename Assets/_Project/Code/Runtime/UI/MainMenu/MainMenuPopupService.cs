@@ -1,6 +1,5 @@
-﻿using _Project.Code.Runtime.UI.Core.Popup;
-using _Project.Code.Runtime.UI.Factories;
-using _Project.Code.Runtime.UI.Factories.Presenters;
+﻿using _Project.Code.Runtime.UI.Core;
+using _Project.Code.Runtime.UI.Core.Popup;
 using UnityEngine;
 
 namespace _Project.Code.Runtime.UI.MainMenu

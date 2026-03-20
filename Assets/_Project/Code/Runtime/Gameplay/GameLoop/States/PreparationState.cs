@@ -3,10 +3,13 @@ using _Project.Code.Runtime.Configs.Shop;
 using _Project.Code.Runtime.Gameplay.DefenceFeature;
 using _Project.Code.Runtime.Gameplay.TeamFeature;
 using _Project.Code.Runtime.Meta.WalletFeature;
+using _Project.Code.Runtime.UI.Gameplay;
 using _Project.Code.Runtime.Utility.ConfigManagment;
 using _Project.Code.Runtime.Utility.Extensions;
 using _Project.Code.Runtime.Utility.InputService;
 using _Project.Code.Runtime.Utility.StateMachineCore.States;
+using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace _Project.Code.Runtime.Gameplay.GameLoop.States
 {
@@ -16,13 +19,15 @@ namespace _Project.Code.Runtime.Gameplay.GameLoop.States
         private readonly DefenceObjectsFactory _defenceObjectsFactory;
         private readonly ConfigsProvider _configs;
         private readonly Wallet _wallet;
+        private readonly GameplayPopupService _popupService;
 
-        public PreparationState(IInputService inputService, DefenceObjectsFactory defenceObjectsFactory, ConfigsProvider configs, Wallet wallet)
+        public PreparationState(IInputService inputService, DefenceObjectsFactory defenceObjectsFactory, ConfigsProvider configs, Wallet wallet, GameplayPopupService popupService)
         {
             _inputService = inputService;
             _defenceObjectsFactory = defenceObjectsFactory;
             _configs = configs;
             _wallet = wallet;
+            _popupService = popupService;
         }
 
         public bool Continue { get; private set; }
@@ -34,9 +39,9 @@ namespace _Project.Code.Runtime.Gameplay.GameLoop.States
                 MineConfig mineConfig = _configs.GetConfig<MineConfig>();
                 int price = _configs.GetConfig<ShopConfig>().GetPrice(mineConfig);
                 
-                if (_wallet.Enough(CurrencyType.Soft, price))
+                if (_wallet.Enough(CurrencyType.Soft, price) && _inputService.IsCursorOverUI == false)
                 {
-                    _defenceObjectsFactory.CreateMine(
+                    _defenceObjectsFactory.CreateMine( 
                         VectorExtensions.CameraToWorldPoint(_inputService.MousePosition),
                         mineConfig,
                         TeamsType.Player);
@@ -44,9 +49,13 @@ namespace _Project.Code.Runtime.Gameplay.GameLoop.States
                     _wallet.Spend(CurrencyType.Soft, price);
                 }
             }
+        }
 
-            if (_inputService.Continue.Down)
-                Continue = true;
+        public override void Enter()
+        {
+            base.Enter();
+            
+            _popupService.OpenContinuePopup(() => Continue = true);
         }
 
         public override void Exit()

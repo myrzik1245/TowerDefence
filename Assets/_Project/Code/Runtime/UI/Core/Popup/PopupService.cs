@@ -1,6 +1,5 @@
 ﻿using _Project.Code.Runtime.UI.CommonPopups.ConfirmPopup;
-using _Project.Code.Runtime.UI.Factories;
-using _Project.Code.Runtime.UI.Factories.Presenters;
+using _Project.Code.Runtime.UI.CommonPopups.ContinuePopup;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +22,16 @@ namespace _Project.Code.Runtime.UI.Core.Popup
             _popupLayer = popupLayer;
         }
 
+        public ContinuePopupPresenter OpenContinuePopup(Action onContinue)
+        {
+            ContinuePopupView view = _viewsFactory.Create<ContinuePopupView>(ViewIDs.ContinuePopup, _popupLayer);
+            ContinuePopupPresenter presenter = _projectPresentersFactory.CreateContinuePopupPresenter(view, onContinue);
+            
+            OnPopupCreated(presenter, view);
+            
+            return presenter;
+        }
+        
         public ConfirmPopupPresenter OpenConfirmPopup(
             string title,
             string message,
@@ -56,7 +65,6 @@ namespace _Project.Code.Runtime.UI.Core.Popup
             });
             
             data.CloseRequestSubscription.Dispose();
-            
         }
 
         public void Dispose()
@@ -75,9 +83,9 @@ namespace _Project.Code.Runtime.UI.Core.Popup
             presenter.Initialize();
             presenter.Show();
 
-            IDisposable subsctiption = presenter.CloseRequest.Subscribe(Close);
+            IDisposable subscription = presenter.CloseRequest.Subscribe(Close);
             
-            _popupsData.Add(new PopupData(presenter, view, subsctiption, closeCallback));
+            _popupsData.Add(new PopupData(presenter, view, subscription, closeCallback));
         }
 
         private void DisposePopup(PopupData data)

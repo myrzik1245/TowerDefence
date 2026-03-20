@@ -48,17 +48,25 @@ namespace _Project.Code.Runtime.UI.Core.Popup
         
         protected virtual void ModifiedShowAnimation(Sequence showAnimation)
         {
-            showAnimation
-                .Append(_anticlicker.DOFade(1, 0.2f).From(0))
-                .Append(_body.transform.DOScale(1, 0.2f).From(0.2f).SetEase(Ease.InOutQuad))
-                .Join(_body.DOFade(1, 0.1f).From(0));
+            if (_anticlicker != null)
+                showAnimation
+                    .Append(_anticlicker?.DOFade(1, 0.2f).From(0));
+            
+            if (_body != null)
+                showAnimation
+                    .Append(_body.transform.DOScale(1, 0.2f).From(0.2f).SetEase(Ease.InOutQuad))
+                    .Join(_body.DOFade(1, 0.1f).From(0));
         }
         
         protected virtual void ModifiedHideAnimation(Sequence hideAnimation)
         {
-            hideAnimation
-                .Append(_body.transform.DOScale(0, 0.3f).From(1).SetEase(Ease.InOutBack))
-                .Append(_anticlicker.DOFade(0, 0.1f).From(1));
+            if (_body != null)
+                hideAnimation
+                    .Append(_body.transform.DOScale(0, 0.3f).From(1).SetEase(Ease.InOutBack));
+            
+            if (_anticlicker != null)
+                hideAnimation
+                    .Append(_anticlicker?.DOFade(0, 0.1f).From(1));
         }
 
         protected virtual void OnPreShow()

@@ -10,6 +10,7 @@ namespace _Project.Code.Runtime.Infrastructure.EntryPoints.SceneEntryPoints
         public override IEnumerator Initialize(DIContainer container, IInputSceneArgs inputSceneArgs)
         {
             MainMenuRegistrations.Register(container);
+            container.Initialize();
 
             yield break;
         }

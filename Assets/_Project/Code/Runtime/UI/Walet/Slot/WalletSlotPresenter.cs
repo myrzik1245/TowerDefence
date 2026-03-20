@@ -23,7 +23,7 @@ namespace _Project.Code.Runtime.UI.Walet.Slot
         public void Initialize()
         {
             _view.SetAmount(_slot.Amount.Value);
-            _view.SetIcon(_config.Icon);
+            _view.SetIcon(_config.GetIcon(_slot.CurrencyType));
             _subscription = _slot.Amount.Subscribe(_view.SetAmount);
         }
         

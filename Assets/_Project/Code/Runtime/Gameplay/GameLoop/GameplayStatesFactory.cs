@@ -12,7 +12,6 @@ using _Project.Code.Runtime.Utility.ConfigManagment;
 using _Project.Code.Runtime.Utility.CoroutineManagment;
 using _Project.Code.Runtime.Utility.DI;
 using _Project.Code.Runtime.Utility.InputService;
-using _Project.Code.Runtime.Utility.SceneManagment.SceneInputArgs;
 
 namespace _Project.Code.Runtime.Gameplay.GameLoop
 {
@@ -94,10 +93,12 @@ namespace _Project.Code.Runtime.Gameplay.GameLoop
                 _inputService,
                 _defenceObjectsFactory,
                 _configsProvider,
-                _wallet);
+                _wallet,
+                _gameplayPopupService);
             
             ICondition stageToPreparation = new CompositeCondition(
-                new FuncCondition(() => _stageService.IsCompleate.Value));
+                new FuncCondition(() => _stageService.IsCompleate.Value),
+                new FuncCondition(() => _stageService.HasNextStage()));
             
             ICondition preparationToStage  = new CompositeCondition(
                 new FuncCondition(() => preparationState.Continue));

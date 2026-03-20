@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace _Project.Code.Runtime.Utility.InputService.Keyboard
 {
@@ -13,5 +15,21 @@ namespace _Project.Code.Runtime.Utility.InputService.Keyboard
         public Vector2 MousePosition => Input.mousePosition;
         public IKey Attack { get; private set; }
         public IKey Continue { get; private set; }
+        
+        public bool IsCursorOverUI {
+            get 
+            {
+                PointerEventData eventData = new(EventSystem.current)
+                {
+                    position = MousePosition,
+                };
+
+                List<RaycastResult> results = new();
+    
+                EventSystem.current.RaycastAll(eventData, results);
+    
+                return results.Count > 0;
+            }
+        }
     }
 }

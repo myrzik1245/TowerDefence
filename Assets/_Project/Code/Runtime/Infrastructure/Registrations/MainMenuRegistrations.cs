@@ -1,7 +1,5 @@
 ﻿using _Project.Code.Runtime.UI.CommonViews;
 using _Project.Code.Runtime.UI.Core;
-using _Project.Code.Runtime.UI.Factories;
-using _Project.Code.Runtime.UI.Factories.Presenters;
 using _Project.Code.Runtime.UI.MainMenu;
 using _Project.Code.Runtime.UI.Walet;
 using _Project.Code.Runtime.UI.WinLose;
@@ -19,11 +17,7 @@ namespace _Project.Code.Runtime.Infrastructure.Registrations
             mainMenuContainer.Register(CreateMainMenuView).AsSingle().NonLazy();
             mainMenuContainer.Register(CreateMainMenuPresenter).AsSingle().NonLazy();
             mainMenuContainer.Register(CreateMainMenuPresentersFactory).AsSingle();
-            mainMenuContainer.Register(CreateWalletPresenter).AsSingle().NonLazy();
-            mainMenuContainer.Register(CreateWinLosePresenter).AsSingle().NonLazy();
             mainMenuContainer.Register(CreateMainMenuPopupService).AsSingle().NonLazy();
-            
-            mainMenuContainer.Initialize();
         }
         
         private static MainMenuPopupService CreateMainMenuPopupService(DIContainer c)
@@ -34,24 +28,6 @@ namespace _Project.Code.Runtime.Infrastructure.Registrations
                 c.Resolve<ViewsFactory>(),
                 c.Resolve<ProjectPresentersFactory>(),
                 uiRoot.PopupsLayer);
-        }
-
-        private static WinLosePresenter CreateWinLosePresenter(DIContainer c)
-        {
-            MainMenuView mainMenuView = c.Resolve<MainMenuView>();
-            MainMenuPresentersFactory presentersFactory = c.Resolve<MainMenuPresentersFactory>();
-            WinLoseView view = mainMenuView.WinLoseView;
-            
-            return presentersFactory.CreateWinLoseCounter(view);
-        }
-        
-        private static WalletPresenter CreateWalletPresenter(DIContainer c)
-        {
-            MainMenuView mainMenuView = c.Resolve<MainMenuView>();
-            ProjectPresentersFactory presentersFactory = c.Resolve<ProjectPresentersFactory>();
-            WalletView view = mainMenuView.WalletView;
-            
-            return presentersFactory.CreateWalletPresenter(view);
         }
         
         private static MainMenuPresenter CreateMainMenuPresenter(DIContainer c)

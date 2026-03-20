@@ -10,13 +10,12 @@ using _Project.Code.Runtime.Gameplay.MainHero;
 using _Project.Code.Runtime.Gameplay.SpawnerFeature;
 using _Project.Code.Runtime.Gameplay.StageFeature;
 using _Project.Code.Runtime.UI.Core;
-using _Project.Code.Runtime.UI.Factories;
-using _Project.Code.Runtime.UI.Factories.Presenters;
 using _Project.Code.Runtime.UI.Gameplay;
 using _Project.Code.Runtime.Utility.AssetsManagment;
 using _Project.Code.Runtime.Utility.ConfigManagment;
 using _Project.Code.Runtime.Utility.DI;
 using _Project.Code.Runtime.Utility.SceneManagment.SceneInputArgs;
+using UnityEditor;
 using UnityEngine;
 
 namespace _Project.Code.Runtime.Infrastructure.Registrations
@@ -45,10 +44,20 @@ namespace _Project.Code.Runtime.Infrastructure.Registrations
             gameplayContainer.Register(CreateGameplayPresentersFactory).AsSingle();
             gameplayContainer.Register(CreateGameplayPopupService).AsSingle();
             gameplayContainer.Register(CreateUIRoot).AsSingle();
-
-            gameplayContainer.Initialize();
+            gameplayContainer.Register(CreateGameplayPresenter).AsSingle().NonLazy();
         }
 
+        private static GameplayPresenter CreateGameplayPresenter(DIContainer c)
+        {
+            GameplayPresentersFactory gameplayPresentersFactory = c.Resolve<GameplayPresentersFactory>();
+            ViewsFactory viewsFactory = c.Resolve<ViewsFactory>();
+            UIRoot uiRoot = c.Resolve<UIRoot>();
+            
+            GameplayView view = viewsFactory.Create<GameplayView>(ViewIDs.Gameplay, uiRoot.HUDLayer); 
+            
+            return gameplayPresentersFactory.CreateGameplayPresenter(view);
+        }
+        
         private static UIRoot CreateUIRoot(DIContainer c)
         {
             ResourcesAssetsLoader resourceLoader = c.Resolve<ResourcesAssetsLoader>();
