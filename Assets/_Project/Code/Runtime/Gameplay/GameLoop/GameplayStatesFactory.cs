@@ -98,7 +98,8 @@ namespace _Project.Code.Runtime.Gameplay.GameLoop
             
             ICondition stageToPreparation = new CompositeCondition(
                 new FuncCondition(() => _stageService.IsCompleate.Value),
-                new FuncCondition(() => _stageService.HasNextStage()));
+                new FuncCondition(() => _stageService.HasNextStage()),
+                new FuncCondition(() => _mainHeroService.MainHero.IsDead.Value == false));
             
             ICondition preparationToStage  = new CompositeCondition(
                 new FuncCondition(() => preparationState.Continue));
