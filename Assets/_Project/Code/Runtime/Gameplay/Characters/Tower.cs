@@ -1,7 +1,6 @@
 ﻿using _Project.Code.Runtime.Gameplay.AI;
-using _Project.Code.Runtime.Gameplay.AttackFeature;
 using _Project.Code.Runtime.Gameplay.AttackFeature.Core;
-using _Project.Code.Runtime.Gameplay.AttackFeature.PositionAttack;
+using _Project.Code.Runtime.Gameplay.AttackFeature.Position;
 using _Project.Code.Runtime.Gameplay.HealthFeature;
 using _Project.Code.Runtime.Gameplay.ProcessFeature;
 using _Project.Code.Runtime.Gameplay.TeamFeature;
@@ -18,16 +17,14 @@ namespace _Project.Code.Runtime.Gameplay.Characters
         [SerializeField] private Transform _shootPoint;
         
         private Health _health;
-        private IAttack _attack;
-        private ReactiveVariable<Vector3> _position;
         private Process _spawnProcess;
-        private float _attackTime;
-        private ICoroutinePerformer _coroutinePerformer;
-
+        private PositionAttack _positionAttack;
+        private IDisposable _isDeadSubscription;
+        private ReactiveVariable<Vector3> _position;
+        
         private readonly Blackboard _blackboard = new();
-        private readonly ReactiveVariable<bool> _initialized = new();
         private readonly ReactiveVariable<bool> _spawned = new();
-        private readonly ReactiveEvent<PositionAttackProcess> _positionAttacked = new();
+        private readonly ReactiveVariable<bool> _initialized = new();
 
         public TeamsType TeamType { get; private set; }
         public IReadOnlyReactiveVariable<bool> IsDead => _health.IsDead;
@@ -36,9 +33,7 @@ namespace _Project.Code.Runtime.Gameplay.Characters
         public IReadOnlyReactiveVariable<Vector3> Position => _position;
         public IReadOnlyReactiveVariable<bool> IsInitialized => _initialized;
         public IReadOnlyReactiveVariable<bool> IsSpawned => _spawned;
-        public IReadOnlyReactiveEvent<PositionAttackProcess> PositionAttacked => _positionAttacked;
-
-        private IDisposable _disposable;
+        public IReadOnlyReactiveEvent<PositionAttackProcess> PositionAttacked => _positionAttack.PositionAttacked;
         
         public void Initialize(
             ICoroutinePerformer coroutinePerformer,
@@ -49,16 +44,19 @@ namespace _Project.Code.Runtime.Gameplay.Characters
             float spawnTime,
             float attackTime)
         {
-            _attack = attack;
             TeamType = teamType;
-            _attackTime = attackTime;
-            _coroutinePerformer = coroutinePerformer;
             _health = new Health(startHealth, maxHealth);
             _position = new ReactiveVariable<Vector3>(transform.position);
 
-            _spawnProcess = new Process(spawnTime, _coroutinePerformer);
+            _positionAttack = new PositionAttack(
+                coroutinePerformer,
+                attack,
+                _shootPoint,
+                attackTime);
             
-            _disposable = _health.IsDead.Subscribe(isDead =>
+            _spawnProcess = new Process(spawnTime, coroutinePerformer);
+            
+            _isDeadSubscription = _health.IsDead.Subscribe(isDead =>
             {
                 if (isDead)
                     Destroy(gameObject);
@@ -69,9 +67,9 @@ namespace _Project.Code.Runtime.Gameplay.Characters
             _spawnProcess.StartProcess(() => _spawned.Value = true);
         }
 
-        public bool CanTakeDamage(int healAmount)
+        public bool CanTakeDamage(int damage)
         {
-            return _health.CanTakeDamage(healAmount);
+            return _health.CanTakeDamage(damage);
         }
 
         public void TakeDamage(int damage)
@@ -96,10 +94,8 @@ namespace _Project.Code.Runtime.Gameplay.Characters
         {
             if (_spawned.Value == false)
                 return;
-
-            PositionAttackProcess attackProcess = new(_coroutinePerformer, _shootPoint.position, position, _attackTime);
-            _positionAttacked.Invoke(attackProcess);
-            attackProcess.StartProcess(() => _attack.Attack(position));
+            
+            _positionAttack.Attack(position);
         }
         
         public void WriteData(string key, object value)
@@ -114,7 +110,7 @@ namespace _Project.Code.Runtime.Gameplay.Characters
 
         private void OnDestroy()
         {
-            _disposable?.Dispose();
+            _isDeadSubscription?.Dispose();
         }
     }
 }

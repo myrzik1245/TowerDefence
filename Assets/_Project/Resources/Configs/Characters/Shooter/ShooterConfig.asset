@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2228c9fb8ff4f8bb5bfb740ff2f0a5b, type: 3}
+  m_Name: ShooterConfig
+  m_EditorClassIdentifier: 
+  <PrefabPath>k__BackingField: Gameplay/Characters/Shooter
+  <SpawnTime>k__BackingField: 1
+  <AttackTime>k__BackingField: 1
+  <HealthConfigData>k__BackingField:
+    <StartHealth>k__BackingField: 5
+    <MaxHealth>k__BackingField: 5
+    <ClampHealth>k__BackingField: 1
+  <ExplosionConfig>k__BackingField: {fileID: 11400000, guid: 849f2c9870b4ce741909ce675e491a2e,
+    type: 2}
+  <MovementConfigData>k__BackingField:
+    <Speed>k__BackingField: 2
+    <Smooth>k__BackingField: 5
+  <RotatorConfigData>k__BackingField:
+    <Speed>k__BackingField: 20
+  <Range>k__BackingField: 3

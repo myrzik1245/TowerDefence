@@ -7,7 +7,7 @@ using _Project.Code.Runtime.Utility.DI;
 using System;
 using UnityEngine;
 
-namespace _Project.Code.Runtime.Enemy
+namespace _Project.Code.Runtime.Gameplay.Enemy
 {
     public class EnemiesFactory
     {
@@ -24,21 +24,21 @@ namespace _Project.Code.Runtime.Enemy
 
         public ICharacter Create(CharacterConfig config, Vector3 position)
         {
-            ICharacter character = null;
-            
             switch (config)
             {
                 case BomberConfig bomberConfig:
                     Bomber bomber = _charactersFactory.CreateBomber(bomberConfig, position, TeamsType.Enemy);
                     _brainsFactory.CreateBomberAIBrain(bomber);
-                    character = bomber;
-                    break;
+                    return bomber;
+                
+                case ShooterConfig shooterConfig:
+                    Shooter shooter = _charactersFactory.CreateShooter(shooterConfig, position, TeamsType.Enemy);
+                    _brainsFactory.CreateShooterAIBrain(shooter);
+                    return shooter;
                 
                 default:
                     throw new ArgumentException($"Unknown config {config.GetType()}");
             }
-
-            return character;
         }
     }
 }

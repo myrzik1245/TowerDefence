@@ -3,10 +3,9 @@ using _Project.Code.Runtime.Utility.CoroutineManagment;
 using _Project.Code.Runtime.Utility.Reactive.Event;
 using _Project.Code.Runtime.Utility.Reactive.Variable;
 using System;
-using System.Collections;
 using UnityEngine;
 
-namespace _Project.Code.Runtime.Gameplay.AttackFeature.PositionAttack
+namespace _Project.Code.Runtime.Gameplay.AttackFeature.Position
 {
     public class PositionAttackProcess
     {

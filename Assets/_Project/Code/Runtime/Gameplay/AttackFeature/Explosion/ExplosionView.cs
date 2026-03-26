@@ -2,7 +2,7 @@ using _Project.Code.Runtime.Gameplay.ViewCore;
 using System;
 using UnityEngine;
 
-namespace _Project.Code.Runtime.Gameplay.AttackFeature.Exposion
+namespace _Project.Code.Runtime.Gameplay.AttackFeature.Explosion
 {
     public class ExplosionView : CharacterViewBase
     {

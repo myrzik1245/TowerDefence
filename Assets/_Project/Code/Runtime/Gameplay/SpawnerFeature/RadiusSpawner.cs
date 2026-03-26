@@ -1,6 +1,6 @@
 ﻿using _Project.Code.Runtime.Configs.Characters;
-using _Project.Code.Runtime.Enemy;
 using _Project.Code.Runtime.Gameplay.Characters;
+using _Project.Code.Runtime.Gameplay.Enemy;
 using _Project.Code.Runtime.Gameplay.TeamFeature;
 using _Project.Code.Runtime.Utility.PositionRandomizer;
 using System.Collections.Generic;

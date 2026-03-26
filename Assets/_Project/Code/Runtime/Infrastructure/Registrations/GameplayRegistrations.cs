@@ -1,9 +1,9 @@
 ﻿using _Project.Code.Runtime.Configs.Level;
-using _Project.Code.Runtime.Enemy;
 using _Project.Code.Runtime.Gameplay.AI.Brains;
 using _Project.Code.Runtime.Gameplay.AttackFeature.Core;
 using _Project.Code.Runtime.Gameplay.Characters;
 using _Project.Code.Runtime.Gameplay.DefenceFeature;
+using _Project.Code.Runtime.Gameplay.Enemy;
 using _Project.Code.Runtime.Gameplay.ExplosionFeature;
 using _Project.Code.Runtime.Gameplay.GameLoop;
 using _Project.Code.Runtime.Gameplay.MainHero;
