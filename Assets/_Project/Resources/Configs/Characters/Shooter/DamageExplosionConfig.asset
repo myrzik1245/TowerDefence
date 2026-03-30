@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1174e2199e984d43a82f8be0d5d41d33, type: 3}
   m_Name: DamageExplosionConfig
   m_EditorClassIdentifier: 
-  <Radius>k__BackingField: 2
-  <Damage>k__BackingField: 3
+  <Radius>k__BackingField: 1
+  <Damage>k__BackingField: 1

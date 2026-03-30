@@ -1,6 +1,7 @@
 ﻿using _Project.Code.Runtime.Gameplay.AI;
 using _Project.Code.Runtime.Gameplay.AttackFeature.Core;
-using _Project.Code.Runtime.Gameplay.AttackFeature.Explosion;
+using _Project.Code.Runtime.Gameplay.AttackFeature.Position;
+using _Project.Code.Runtime.Gameplay.AttackFeature.Range;
 using _Project.Code.Runtime.Gameplay.HealthFeature;
 using _Project.Code.Runtime.Gameplay.MovementFeature;
 using _Project.Code.Runtime.Gameplay.ProcessFeature;
@@ -13,51 +14,53 @@ using UnityEngine;
 
 namespace _Project.Code.Runtime.Gameplay.Characters
 {
-    [RequireComponent(typeof(Rigidbody))]
-    public class Bomber : MonoBehaviour, ICharacter, IMovable, IRotatable, IExplosion, IAttack
+    public class Shooter : MonoBehaviour, ICharacter, IMovable, IRotatable, IPositionAttack, IRangeAttack
     {
+        [SerializeField] private Transform _shootPoint;
+        
+        private ICoroutinePerformer _coroutinePerformer;
         private Health _health;
-        private ExplosionAttack _attack;
         private RigidbodyMover _rigidbodyMover;
         private RigidbodyRotator _rigidbodyRotator;
         private Process _spawnProcess;
-        private ICoroutinePerformer _coroutinePerformer;
+        private RangeAttack _rangeAttack;
+        private IDisposable _isDeathSubscription;
         
         private readonly Blackboard _blackboard = new();
-        private readonly ReactiveVariable<bool> _initialized = new();
-        private readonly ReactiveVariable<bool> _spawned = new();
+        private readonly ReactiveVariable<bool> _isInitialized = new();
+        private readonly ReactiveVariable<bool> _isSpawned = new();
+        private readonly ReactiveEvent<PositionAttackProcess> _positionAttacked = new();
 
         public IReadOnlyReactiveVariable<bool> IsDead => _health.IsDead;
         public IReadOnlyReactiveVariable<int> CurrentHealth => _health.CurrentHealth;
         public IReadOnlyReactiveVariable<int> MaxHealth => _health.MaxHealth;
         public IReadOnlyReactiveVariable<Vector3> Position => _rigidbodyMover.Position;
-        public IReadOnlyReactiveVariable<Vector3>  MoveDirection => _rigidbodyMover.Direction;
+        public IReadOnlyReactiveVariable<bool> IsInitialized => _isInitialized;
+        public IReadOnlyReactiveVariable<bool> IsSpawned => _isSpawned;
+        public IReadOnlyReactiveVariable<Vector3> MoveDirection => _rigidbodyMover.Direction;
         public IReadOnlyReactiveVariable<Quaternion> Rotation => _rigidbodyRotator.Rotation;
-        public IReadOnlyReactiveVariable<bool> IsInitialized => _initialized;
-        public IReadOnlyReactiveVariable<bool> IsSpawned => _spawned;
-        public IReadOnlyReactiveEvent<Vector3> AttackExecuted => _attack.AttackExecuted;
-        
+        public IReadOnlyReactiveEvent<PositionAttackProcess> PositionAttacked => _positionAttacked;
         public TeamsType TeamType { get; private set; }
-
-        private IDisposable _isDeathSubscription;
 
         public void Initialize(
             ICoroutinePerformer coroutinePerformer,
+            TeamsType teamType,
+            IAttack attack,
             int startHealth,
             int maxHealth,
-            ExplosionAttack attack,
             float moveSpeed,
             float moveSmooth,
-            float rotateSpeed,
-            TeamsType teamType,
-            float spawnTime)
+            float rotationSpeed,
+            float spawnTime,
+            float attackTime)
         {
             _coroutinePerformer = coroutinePerformer;
-            _attack = attack;
             TeamType = teamType;
 
-            _health = new Health(startHealth, maxHealth);
-            
+            _health = new Health(
+                startHealth,
+                maxHealth);
+
             _rigidbodyMover = new RigidbodyMover(
                 GetComponent<Rigidbody>(),
                 moveSpeed,
@@ -65,19 +68,19 @@ namespace _Project.Code.Runtime.Gameplay.Characters
 
             _rigidbodyRotator = new RigidbodyRotator(
                 GetComponent<Rigidbody>(),
-                rotateSpeed);
+                rotationSpeed);
 
-            _spawnProcess = new Process(spawnTime, _coroutinePerformer);
-            
             _isDeathSubscription = _health.IsDead.Subscribe(isDead =>
             {
                 if (isDead)
                     Destroy(gameObject);
             });
-
-            _initialized.Value = true;
             
-            _spawnProcess.StartProcess(() => _spawned.Value = true);
+            _isInitialized.Value = true;
+            
+            _spawnProcess = new Process(spawnTime, _coroutinePerformer);
+
+            _spawnProcess.StartProcess(() => _isSpawned.Value = true);
         }
 
         public bool CanTakeDamage(int damage)
@@ -90,41 +93,39 @@ namespace _Project.Code.Runtime.Gameplay.Characters
             _health.TakeDamage(damage);
         }
 
-        public void Attack(Vector3 position)
+        public void WriteData(string key, object value)
         {
-            if (_spawned.Value == false)
-                return;
-            
-            _attack.Attack(position);
-            _health.Kill();
+            _blackboard.WriteData(key, value);
+        }
+
+        public bool TryGetData<TData>(string key, out TData data)
+        {
+            return _blackboard.TryGetData(key, out data);
         }
 
         public void Move(Vector3 direction, float deltaTime)
         {
-            if (_spawned.Value == false)
-                return;
-            
             _rigidbodyMover.Move(direction, deltaTime);
         }
 
         public void Rotate(Vector3 direction, float deltaTime)
         {
-            if (_spawned.Value == false)
-                return;
-            
             _rigidbodyRotator.Rotate(direction, deltaTime);
         }
         
-        public void WriteData(string key, object value)
+        public void Attack(Vector3 position)
         {
-            _blackboard.WriteData(key, value);
+            if (_isSpawned.Value == false)
+                return;
+            
+            _rangeAttack.Attack(position);
         }
         
-        public bool TryGetData<TData>(string key, out TData data)
+        public bool InRange(Vector3 position)
         {
-            return _blackboard.TryGetData(key, out data);
+            return _rangeAttack.InRange(position);
         }
-        
+
         private void OnDestroy()
         {
             _isDeathSubscription.Dispose();

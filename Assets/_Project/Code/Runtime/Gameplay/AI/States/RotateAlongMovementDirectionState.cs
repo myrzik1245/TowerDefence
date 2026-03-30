@@ -1,5 +1,6 @@
 ﻿using _Project.Code.Runtime.Gameplay.MovementFeature;
 using _Project.Code.Runtime.Utility.StateMachineCore.States;
+using UnityEngine;
 
 namespace _Project.Code.Runtime.Gameplay.AI.States
 {
@@ -16,7 +17,10 @@ namespace _Project.Code.Runtime.Gameplay.AI.States
 
         public void Update(float deltaTime)
         {
-            _rotatable.Rotate(_movable.MoveDirection.Value, deltaTime);
+            Vector3 direction = _movable.MoveDirection.Value;
+            direction.y = 0;
+            
+            _rotatable.Rotate(direction, deltaTime);
         }
     }
 }

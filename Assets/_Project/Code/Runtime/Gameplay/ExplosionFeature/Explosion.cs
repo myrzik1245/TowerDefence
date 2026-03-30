@@ -1,4 +1,4 @@
-﻿using _Project.Code.Runtime.Gameplay.AttackFeature.Exposion;
+﻿using _Project.Code.Runtime.Gameplay.AttackFeature.Explosion;
 using _Project.Code.Runtime.Gameplay.ExplosionFeature.ExplosionEffects;
 using _Project.Code.Runtime.Gameplay.TeamFeature;
 using _Project.Code.Runtime.Utility.Reactive.Event;

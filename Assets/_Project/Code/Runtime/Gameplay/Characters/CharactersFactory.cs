@@ -5,6 +5,7 @@ using _Project.Code.Runtime.Gameplay.TeamFeature;
 using _Project.Code.Runtime.Utility.AssetsManagment;
 using _Project.Code.Runtime.Utility.CoroutineManagment;
 using _Project.Code.Runtime.Utility.DI;
+using UnityEditor.Networking.PlayerConnection;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -21,6 +22,27 @@ namespace _Project.Code.Runtime.Gameplay.Characters
             _resourcesAssetsLoader = container.Resolve<ResourcesAssetsLoader>();
             _attackFactory = container.Resolve<AttackFactory>();
             _coroutinePerformer = container.Resolve<ICoroutinePerformer>();
+        }
+
+        public Shooter CreateShooter(ShooterConfig config, Vector3 position, TeamsType teamType)
+        {
+            Shooter prefab = _resourcesAssetsLoader.Load<Shooter>(config.PrefabPath);
+            Shooter instance = Object.Instantiate(prefab, position, Quaternion.identity);
+            instance.Initialize(
+                _coroutinePerformer,
+                teamType,
+                _attackFactory.CreateExplosionAttack(
+                    config.ExplosionConfig,
+                    instance.GetComponent<ITeam>()),
+                config.HealthConfigData.StartHealth,
+                config.HealthConfigData.MaxHealth,
+                config.MovementConfigData.Speed,
+                config.MovementConfigData.Smooth,
+                config.RotatorConfigData.Speed,
+                config.SpawnTime,
+                config.AttackTime);
+            
+            return instance;
         }
         
         public Tower CreateTower(TowerConfig towerConfig, Vector3 position, TeamsType teamType)

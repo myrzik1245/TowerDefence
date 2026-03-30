@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace _Project.Code.Runtime.Gameplay.AttackFeature.PositionAttack
+namespace _Project.Code.Runtime.Gameplay.AttackFeature.Position
 {
     public class PositionAttackProcessView : IDisposable
     {

@@ -3,7 +3,7 @@ using _Project.Code.Runtime.Utility.StateMachineCore.States;
 
 namespace _Project.Code.Runtime.Gameplay.AI
 {
-    public class AIStateMachine : StateMachine<IUpdatableState>
+    public class AIStateMachine : StateMachine<IUpdatableState>, IUpdatableState
     {
         public override void Update(float deltaTime)
         {

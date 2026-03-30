@@ -3,6 +3,7 @@ using _Project.Code.Runtime.Gameplay.Characters;
 using _Project.Code.Runtime.Utility.Conditions;
 using _Project.Code.Runtime.Utility.DI;
 using _Project.Code.Runtime.Utility.InputService;
+using System;
 using UnityEngine;
 
 namespace _Project.Code.Runtime.Gameplay.AI.Brains
@@ -18,6 +19,11 @@ namespace _Project.Code.Runtime.Gameplay.AI.Brains
             _context = container.Resolve<BrainsContext>();
         }
 
+        public IBrain CreateShooterAIBrain(Shooter shooter)
+        {
+            throw new NotImplementedException();
+        }
+        
         public IBrain CreateBomberAIBrain(Bomber bomber)
         {
             MoveToTargetState moveToTargetState = new(bomber, bomber);
@@ -58,7 +64,7 @@ namespace _Project.Code.Runtime.Gameplay.AI.Brains
         public IBrain CreateInputTowerBrain(Tower tower)
         {
             EmptyState emptyState = new();
-            PositionAttackState positionAttackState = new(tower, _inputService);
+            InputPositionAttackState inputPositionAttackState = new(tower, _inputService);
 
             ICondition emptyToAttack = new CompositeCondition(
                 new FuncCondition(() => _inputService.Attack.Down));
@@ -70,11 +76,11 @@ namespace _Project.Code.Runtime.Gameplay.AI.Brains
             
             stateMachine
                 .AddState(emptyState)
-                .AddState(positionAttackState);
+                .AddState(inputPositionAttackState);
 
             stateMachine
-                .AddTransition(emptyState, positionAttackState, emptyToAttack)
-                .AddTransition(positionAttackState, emptyState, attackToEmpty);
+                .AddTransition(emptyState, inputPositionAttackState, emptyToAttack)
+                .AddTransition(inputPositionAttackState, emptyState, attackToEmpty);
             
             IBrain brain = new StateMachineBrain(stateMachine);
             

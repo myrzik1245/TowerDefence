@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace _Project.Code.Runtime.Gameplay.AttackFeature.PositionAttack
+namespace _Project.Code.Runtime.Gameplay.AttackFeature.Position
 {
     public class PositionAttackView : CharacterViewBase
     {

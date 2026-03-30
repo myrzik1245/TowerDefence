@@ -2,7 +2,7 @@
 {
     public interface IDamageble
     {
-        public bool CanTakeDamage(int healAmount);
+        public bool CanTakeDamage(int damage);
         public void TakeDamage(int damage);
     }
 }

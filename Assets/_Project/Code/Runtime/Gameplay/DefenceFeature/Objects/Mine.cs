@@ -1,5 +1,5 @@
 ﻿using _Project.Code.Runtime.Configs.Mine;
-using _Project.Code.Runtime.Gameplay.AttackFeature.Exposion;
+using _Project.Code.Runtime.Gameplay.AttackFeature.Explosion;
 using _Project.Code.Runtime.Gameplay.Characters;
 using _Project.Code.Runtime.Gameplay.ExplosionFeature;
 using _Project.Code.Runtime.Gameplay.TeamFeature;
