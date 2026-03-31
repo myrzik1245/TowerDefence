@@ -1,5 +1,4 @@
-﻿using _Project.Code.Runtime.Gameplay.AttackFeature;
-using _Project.Code.Runtime.Gameplay.AttackFeature.Core;
+﻿using _Project.Code.Runtime.Gameplay.AttackFeature.Core;
 using _Project.Code.Runtime.Gameplay.MovementFeature;
 using _Project.Code.Runtime.Utility.StateMachineCore.States;
 

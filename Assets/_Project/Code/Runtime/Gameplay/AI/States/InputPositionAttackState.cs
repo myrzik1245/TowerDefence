@@ -1,5 +1,4 @@
-﻿using _Project.Code.Runtime.Gameplay.AttackFeature.Core;
-using _Project.Code.Runtime.Gameplay.AttackFeature.Position;
+﻿using _Project.Code.Runtime.Gameplay.AttackFeature.Position;
 using _Project.Code.Runtime.Utility.Extensions;
 using _Project.Code.Runtime.Utility.InputService;
 using _Project.Code.Runtime.Utility.StateMachineCore.States;
@@ -20,6 +19,8 @@ namespace _Project.Code.Runtime.Gameplay.AI.States
 
         public override void Enter()
         {
+            base.Enter();
+            
             Vector3 position = VectorExtensions.CameraToWorldPoint(_inputService.MousePosition);
             _positionAttack.Attack(position);
         }

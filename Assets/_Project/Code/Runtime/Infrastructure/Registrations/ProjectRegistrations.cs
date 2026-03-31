@@ -15,6 +15,7 @@ using _Project.Code.Runtime.Utility.InputService;
 using _Project.Code.Runtime.Utility.InputService.Keyboard;
 using _Project.Code.Runtime.Utility.LoadScreen;
 using _Project.Code.Runtime.Utility.SceneManagment;
+using _Project.Code.Runtime.Utility.Timer;
 using _Project.Code.Runtime.Utility.Update;
 using UnityEngine;
 
@@ -37,8 +38,14 @@ namespace _Project.Code.Runtime.Infrastructure.Registrations
             projectContainer.Register(CreateWinLoseCounter).AsSingle().NonLazy();
             projectContainer.Register(CreatePlayerDataProvider).AsSingle();
             projectContainer.Register(CreateSaveLoadService).AsSingle();
+            projectContainer.Register(CreateTimerFactory).AsSingle();
 
             projectContainer.Initialize();
+        }
+
+        private static TimerFactory CreateTimerFactory(DIContainer c)
+        {
+            return new TimerFactory(c);
         }
 
         private static SaveLoadService CreateSaveLoadService(DIContainer c)

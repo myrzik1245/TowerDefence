@@ -18,10 +18,11 @@ namespace _Project.Code.Runtime.Gameplay.AI.States
 
         public override void Enter()
         {
-            if (_blackboard.TryGetData(BlackboardKeys.Target, out Transform target))
+            base.Enter();
+            
+            if (_blackboard.TryGetData(BlackboardKeys.Target, out Transform target) && target != null)
             {
                 Vector3 position = target.position;
-                
                 _positionAttack.Attack(position);
             }
         }

@@ -9,9 +9,15 @@ namespace _Project.Code.Runtime.Utility.StateMachineCore
 {
     public class StateMachine<TState> : State, IDisposable where TState : class, IState
     {
+        private readonly IDisposable[] _disposables;
         private readonly List<StateNode<TState>> _states = new();
         private StateNode<TState> _currentState;
         private bool _isRunning;
+
+        public StateMachine(params IDisposable[] disposables)
+        {
+            _disposables = disposables;
+        }
 
         protected TState CurrentState => _currentState?.State;
 
@@ -67,6 +73,9 @@ namespace _Project.Code.Runtime.Utility.StateMachineCore
         {
             foreach (StateNode<TState> stateNode in _states)
                 stateNode.Dispose();
+
+            foreach (IDisposable disposable in _disposables)
+                disposable.Dispose();
 
             _states.Clear();
         }

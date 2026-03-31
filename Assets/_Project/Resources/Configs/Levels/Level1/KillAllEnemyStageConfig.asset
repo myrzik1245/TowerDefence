@@ -13,9 +13,7 @@ MonoBehaviour:
   m_Name: KillAllEnemyStageConfig
   m_EditorClassIdentifier: 
   <Enemies>k__BackingField:
-  - {fileID: 11400000, guid: 97b4c35efc2801e4c9664aaec116c7cc, type: 2}
-  - {fileID: 11400000, guid: 97b4c35efc2801e4c9664aaec116c7cc, type: 2}
-  - {fileID: 11400000, guid: 97b4c35efc2801e4c9664aaec116c7cc, type: 2}
-  - {fileID: 11400000, guid: 97b4c35efc2801e4c9664aaec116c7cc, type: 2}
-  - {fileID: 11400000, guid: 97b4c35efc2801e4c9664aaec116c7cc, type: 2}
+  - {fileID: 11400000, guid: 1c02320ffbdf1164eafdab2b01f964d4, type: 2}
+  - {fileID: 11400000, guid: 1c02320ffbdf1164eafdab2b01f964d4, type: 2}
+  - {fileID: 11400000, guid: 1c02320ffbdf1164eafdab2b01f964d4, type: 2}
   <SpawnRange>k__BackingField: 5

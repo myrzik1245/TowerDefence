@@ -33,7 +33,7 @@ namespace _Project.Code.Runtime.Gameplay.Enemy
                 
                 case ShooterConfig shooterConfig:
                     Shooter shooter = _charactersFactory.CreateShooter(shooterConfig, position, TeamsType.Enemy);
-                    _brainsFactory.CreateShooterAIBrain(shooter);
+                    _brainsFactory.CreateShooterAIBrain(shooter, shooterConfig);
                     return shooter;
                 
                 default:

@@ -27,3 +27,4 @@ MonoBehaviour:
   <RotatorConfigData>k__BackingField:
     <Speed>k__BackingField: 20
   <Range>k__BackingField: 3
+  <AttackCooldown>k__BackingField: 1

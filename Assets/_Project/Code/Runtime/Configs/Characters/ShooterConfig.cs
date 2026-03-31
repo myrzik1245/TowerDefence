@@ -13,6 +13,7 @@ namespace _Project.Code.Runtime.Configs.Characters
         [field: SerializeField] public MovementConfigData MovementConfigData { get; private set; }
         [field: SerializeField] public RotatorConfigData RotatorConfigData { get; private set; }
         [field: SerializeField] public float Range { get; private set; }
+        [field: SerializeField] public float AttackCooldown { get; private set; }
 
         private void OnValidate()
         {

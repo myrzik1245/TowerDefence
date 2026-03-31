@@ -1,7 +1,5 @@
 ﻿using _Project.Code.Runtime.Gameplay.AI;
-using _Project.Code.Runtime.Gameplay.AttackFeature.Core;
 using _Project.Code.Runtime.Gameplay.AttackFeature.Position;
-using _Project.Code.Runtime.Gameplay.AttackFeature.Range;
 using _Project.Code.Runtime.Gameplay.HealthFeature;
 using _Project.Code.Runtime.Gameplay.MovementFeature;
 using _Project.Code.Runtime.Gameplay.ProcessFeature;
@@ -10,11 +8,12 @@ using _Project.Code.Runtime.Utility.CoroutineManagment;
 using _Project.Code.Runtime.Utility.Reactive.Event;
 using _Project.Code.Runtime.Utility.Reactive.Variable;
 using System;
+using _Project.Code.Runtime.Gameplay.AttackFeature.Core;
 using UnityEngine;
 
 namespace _Project.Code.Runtime.Gameplay.Characters
 {
-    public class Shooter : MonoBehaviour, ICharacter, IMovable, IRotatable, IPositionAttack, IRangeAttack
+    public class Shooter : MonoBehaviour, ICharacter, IMovable, IRotatable, IPositionAttack
     {
         [SerializeField] private Transform _shootPoint;
         
@@ -22,14 +21,13 @@ namespace _Project.Code.Runtime.Gameplay.Characters
         private Health _health;
         private RigidbodyMover _rigidbodyMover;
         private RigidbodyRotator _rigidbodyRotator;
+        private PositionAttack _positionAttack;
         private Process _spawnProcess;
-        private RangeAttack _rangeAttack;
         private IDisposable _isDeathSubscription;
         
         private readonly Blackboard _blackboard = new();
         private readonly ReactiveVariable<bool> _isInitialized = new();
         private readonly ReactiveVariable<bool> _isSpawned = new();
-        private readonly ReactiveEvent<PositionAttackProcess> _positionAttacked = new();
 
         public IReadOnlyReactiveVariable<bool> IsDead => _health.IsDead;
         public IReadOnlyReactiveVariable<int> CurrentHealth => _health.CurrentHealth;
@@ -39,7 +37,7 @@ namespace _Project.Code.Runtime.Gameplay.Characters
         public IReadOnlyReactiveVariable<bool> IsSpawned => _isSpawned;
         public IReadOnlyReactiveVariable<Vector3> MoveDirection => _rigidbodyMover.Direction;
         public IReadOnlyReactiveVariable<Quaternion> Rotation => _rigidbodyRotator.Rotation;
-        public IReadOnlyReactiveEvent<PositionAttackProcess> PositionAttacked => _positionAttacked;
+        public IReadOnlyReactiveEvent<PositionAttackProcess> PositionAttacked => _positionAttack.PositionAttacked;
         public TeamsType TeamType { get; private set; }
 
         public void Initialize(
@@ -61,6 +59,12 @@ namespace _Project.Code.Runtime.Gameplay.Characters
                 startHealth,
                 maxHealth);
 
+            _positionAttack = new PositionAttack(
+                _coroutinePerformer,
+                attack,
+                _shootPoint,
+                attackTime);
+            
             _rigidbodyMover = new RigidbodyMover(
                 GetComponent<Rigidbody>(),
                 moveSpeed,
@@ -118,12 +122,7 @@ namespace _Project.Code.Runtime.Gameplay.Characters
             if (_isSpawned.Value == false)
                 return;
             
-            _rangeAttack.Attack(position);
-        }
-        
-        public bool InRange(Vector3 position)
-        {
-            return _rangeAttack.InRange(position);
+            _positionAttack.Attack(position);
         }
 
         private void OnDestroy()
