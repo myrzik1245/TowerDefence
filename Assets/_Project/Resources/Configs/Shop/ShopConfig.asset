@@ -16,3 +16,6 @@ MonoBehaviour:
   - <ShopItem>k__BackingField: {fileID: 11400000, guid: 1955a4e1defd11d498c64209fce2915b,
       type: 2}
     <Price>k__BackingField: 10
+  - <ShopItem>k__BackingField: {fileID: 11400000, guid: 166422bc9adb5904baf7ca8056b13757,
+      type: 2}
+    <Price>k__BackingField: 20

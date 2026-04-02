@@ -12,7 +12,7 @@ namespace _Project.Code.Runtime.Gameplay.AI.Brains
         private readonly List<BrainData> _brainsData = new();
         private readonly List<BrainData> _toRemove = new();
         
-        public void Register(ICharacter character, IBrain newBrain, ICondition releaseCondition)
+        public void Register(object character, IBrain newBrain, ICondition releaseCondition)
         {
             BrainData newBrainData = new BrainData(character, newBrain, releaseCondition);
 
@@ -62,14 +62,14 @@ namespace _Project.Code.Runtime.Gameplay.AI.Brains
 
         private class BrainData
         {
-            public BrainData(ICharacter character, IBrain brain, ICondition releaseCondition)
+            public BrainData(object character, IBrain brain, ICondition releaseCondition)
             {
                 Character = character;
                 Brain = brain;
                 ReleaseCondition = releaseCondition;
             }
             
-            public ICharacter Character { get; }
+            public object Character { get; }
             public IBrain Brain { get; }
             public ICondition ReleaseCondition { get; }
         }

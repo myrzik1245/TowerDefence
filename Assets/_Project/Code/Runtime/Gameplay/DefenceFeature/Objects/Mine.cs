@@ -1,4 +1,4 @@
-﻿using _Project.Code.Runtime.Configs.Mine;
+﻿using _Project.Code.Runtime.Configs.Defence;
 using _Project.Code.Runtime.Gameplay.AttackFeature.Explosion;
 using _Project.Code.Runtime.Gameplay.Characters;
 using _Project.Code.Runtime.Gameplay.ExplosionFeature;

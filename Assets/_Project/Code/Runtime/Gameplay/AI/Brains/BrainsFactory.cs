@@ -6,6 +6,8 @@ using _Project.Code.Runtime.Utility.Conditions;
 using _Project.Code.Runtime.Utility.DI;
 using _Project.Code.Runtime.Utility.InputService;
 using _Project.Code.Runtime.Configs.Characters;
+using _Project.Code.Runtime.Configs.Defence;
+using _Project.Code.Runtime.Gameplay.DefenceFeature.Objects;
 using _Project.Code.Runtime.Utility.Timer;
 using UnityEngine;
 
@@ -24,6 +26,74 @@ namespace _Project.Code.Runtime.Gameplay.AI.Brains
             _timerFactory = container.Resolve<TimerFactory>();
         }
 
+        public IBrain CreateTurretAIBrain(Turret turret, TurretConfig config)
+        {
+            RotateToTargetState rotateToTargetState = new (turret, turret, turret);
+            TargetPositionAttackState attackState = new(turret, turret);
+            EmptyState emptyState = new();
+            
+            TimerService attackCooldownTimer = _timerFactory.Create(config.Cooldown);
+            
+            IDisposable attackEnterSubscribe = attackState.Entered.Subscribe(attackCooldownTimer.Start);
+            IDisposable emptyEnteredSubscribe = emptyState.Entered.Subscribe(attackCooldownTimer.Start);
+
+            ICondition rotateToEmpty = new CompositeCondition(
+                new FuncCondition(() =>
+                {
+                    if (turret.TryGetData(BlackboardKeys.Target, out Transform target) && target != null)
+                    {
+                        Vector3 direction =  target.position - turret.Position.Value;
+                        return Quaternion.Angle(turret.Rotation.Value, Quaternion.LookRotation(direction)) <= 5;
+                    }
+
+                    return false;
+                }));
+
+            ICondition emptyToRotate = new CompositeCondition(
+                new FuncCondition(() =>
+                {
+                    if (turret.TryGetData(BlackboardKeys.Target, out Transform target) && target != null)
+                    {
+                        Vector3 direction =  target.position - turret.Position.Value;
+                        return Quaternion.Angle(turret.Rotation.Value, Quaternion.LookRotation(direction)) > 5;
+                    }
+
+                    return false;
+                }));
+            
+            ICondition emptyToAttack = new CompositeCondition( 
+                new FuncCondition(() => turret.TryGetData(BlackboardKeys.Target, out Transform target) && target != null),
+                new FuncCondition(() => attackCooldownTimer.IsDone.Value));
+
+            ICondition attackToEmpty = new CompositeCondition( 
+                LogicOperation.Or,
+                new FuncCondition(() => turret.TryGetData(BlackboardKeys.Target, out Transform target) == false && target == null),
+                new FuncCondition(() => attackCooldownTimer.IsDone.Value == false));
+            
+            
+            AIStateMachine stateMachine = new AIStateMachine(
+                attackCooldownTimer,
+                attackEnterSubscribe,
+                emptyEnteredSubscribe);
+
+            stateMachine
+                .AddState(emptyState)
+                .AddState(rotateToTargetState)
+                .AddState(attackState);
+
+            stateMachine
+                .AddTransition(emptyState, rotateToTargetState, emptyToRotate)
+                .AddTransition(rotateToTargetState, emptyState, rotateToEmpty)
+                .AddTransition(emptyState, attackState, emptyToAttack)
+                .AddTransition(attackState, emptyState, attackToEmpty);
+
+            IBrain brain = new StateMachineBrain(stateMachine);
+            
+            _context.Register(turret, brain, new FuncCondition(() => turret.IsDestroyed));
+
+            return brain;
+        }
+        
         public IBrain CreateShooterAIBrain(Shooter shooter, ShooterConfig config)
         {
             TimerService attackCooldownTimer = _timerFactory.Create(config.AttackCooldown);
@@ -70,7 +140,10 @@ namespace _Project.Code.Runtime.Gameplay.AI.Brains
             IDisposable attackEnterSubscribe = attackState.Entered.Subscribe(attackCooldownTimer.Start);
             IDisposable emptyEnteredSubscribe = emptyState.Entered.Subscribe(attackCooldownTimer.Start);
             
-            AIStateMachine stateMachine = new(attackEnterSubscribe, attackCooldownTimer);
+            AIStateMachine stateMachine = new(
+                attackEnterSubscribe,
+                attackCooldownTimer,
+                emptyEnteredSubscribe);
 
             stateMachine
                 .AddState(emptyState)

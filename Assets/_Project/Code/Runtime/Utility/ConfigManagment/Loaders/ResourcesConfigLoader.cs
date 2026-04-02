@@ -1,13 +1,13 @@
 using _Project.Code.Runtime.Configs;
 using _Project.Code.Runtime.Configs.Characters;
 using _Project.Code.Runtime.Configs.Level;
-using _Project.Code.Runtime.Configs.Mine;
 using _Project.Code.Runtime.Configs.Shop;
 using _Project.Code.Runtime.Configs.Wallet;
 using _Project.Code.Runtime.Utility.AssetsManagment;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using _Project.Code.Runtime.Configs.Defence;
 using UnityEngine;
 
 namespace _Project.Code.Runtime.Utility.ConfigManagment.Loaders
@@ -24,6 +24,7 @@ namespace _Project.Code.Runtime.Utility.ConfigManagment.Loaders
             { typeof(ShopConfig), "Configs/Shop/ShopConfig" },
             { typeof(BonusConfig), "Configs/Bonus/BonusConfig" },
             { typeof(WalletConfig), "Configs/Wallet/WalletConfig" },
+            { typeof(TurretConfig), "Configs/DefenceObjects/Turret/TurretConfig" },
         };
 
         public ResourcesConfigLoader(ResourcesAssetsLoader resourcesAssetsLoader)

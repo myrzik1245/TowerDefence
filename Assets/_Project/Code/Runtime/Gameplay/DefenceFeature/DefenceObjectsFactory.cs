@@ -1,8 +1,13 @@
-using _Project.Code.Runtime.Configs.Mine;
+using _Project.Code.Runtime.Configs.Characters;
+using _Project.Code.Runtime.Configs.Defence;
+using _Project.Code.Runtime.Gameplay.AI.Brains;
+using _Project.Code.Runtime.Gameplay.AttackFeature.Core;
+using _Project.Code.Runtime.Gameplay.Characters;
 using _Project.Code.Runtime.Gameplay.DefenceFeature.Objects;
 using _Project.Code.Runtime.Gameplay.ExplosionFeature;
 using _Project.Code.Runtime.Gameplay.TeamFeature;
 using _Project.Code.Runtime.Utility.AssetsManagment;
+using _Project.Code.Runtime.Utility.CoroutineManagment;
 using _Project.Code.Runtime.Utility.DI;
 using UnityEngine;
 
@@ -12,13 +17,36 @@ namespace _Project.Code.Runtime.Gameplay.DefenceFeature
     {
         private readonly ResourcesAssetsLoader _resourcesAssetsLoader;
         private readonly ExplosionsFactory _explosionsFactory;
+        private readonly ICoroutinePerformer _coroutinePerformer;
+        private readonly AttackFactory _attackFactory;
+        private readonly BrainsFactory _brainsFactory;
 
         public DefenceObjectsFactory(DIContainer container)
         {
             _resourcesAssetsLoader = container.Resolve<ResourcesAssetsLoader>();
             _explosionsFactory = container.Resolve<ExplosionsFactory>();
+            _coroutinePerformer = container.Resolve<ICoroutinePerformer>();
+            _attackFactory = container.Resolve<AttackFactory>();
+            _brainsFactory = container.Resolve<BrainsFactory>();
         }
 
+        public Turret CreateTurret(Vector3 position, TurretConfig config, TeamsType teamType)
+        {
+            Turret prefab = _resourcesAssetsLoader.Load<Turret>("Gameplay/DefenceObjects/Turret");
+            Turret instance = Object.Instantiate(prefab, position, Quaternion.identity);
+
+            instance.Initialize(
+                config.RotationSpeed,
+                _coroutinePerformer,
+                _attackFactory.CreateExplosionAttack(config.ExplosionAttackConfig, instance),
+                config.AttackTime,
+                teamType);
+            
+            _brainsFactory.CreateTurretAIBrain(instance, config);
+            
+            return instance;
+        }
+        
         public Mine CreateMine(Vector3 position, MineConfig config, TeamsType teamType)
         {
             Mine prefab = _resourcesAssetsLoader.Load<Mine>("Gameplay/DefenceObjects/Mine");
