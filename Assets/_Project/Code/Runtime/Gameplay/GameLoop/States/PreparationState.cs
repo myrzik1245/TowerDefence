@@ -32,7 +32,7 @@ namespace _Project.Code.Runtime.Gameplay.GameLoop.States
             _popupService = popupService;
             
             _selector = new SelectorService<Action>(
-                BuyAndPlaceTurret);
+                BuyAndPlacePuddle);
         }
 
         public bool Continue { get; private set; }
@@ -63,6 +63,22 @@ namespace _Project.Code.Runtime.Gameplay.GameLoop.States
             return _wallet.Enough(CurrencyType.Soft, _configs.GetConfig<ShopConfig>().GetPrice(shopItem));
         }
 
+        private void BuyAndPlacePuddle()
+        {
+            PuddleConfig puddleConfig = _configs.GetConfig<PuddleConfig>();
+            int price = ShopConfig.GetPrice(puddleConfig);
+
+            if (CanBuy(puddleConfig))
+            {
+                _defenceObjectsFactory.CreatePuddle(
+                    VectorExtensions.CameraToWorldPoint(_inputService.MousePosition),
+                    puddleConfig,
+                    TeamsType.Player);
+                
+                _wallet.Spend(CurrencyType.Soft, price);
+            }
+        }
+        
         private void BuyAndPlaceTurret()
         {
             TurretConfig turretConfig = _configs.GetConfig<TurretConfig>();
@@ -74,6 +90,8 @@ namespace _Project.Code.Runtime.Gameplay.GameLoop.States
                     VectorExtensions.CameraToWorldPoint(_inputService.MousePosition),
                     turretConfig,
                     TeamsType.Player);
+                
+                _wallet.Spend(CurrencyType.Soft, price);
             }
         }
         

@@ -25,6 +25,7 @@ namespace _Project.Code.Runtime.Utility.ConfigManagment.Loaders
             { typeof(BonusConfig), "Configs/Bonus/BonusConfig" },
             { typeof(WalletConfig), "Configs/Wallet/WalletConfig" },
             { typeof(TurretConfig), "Configs/DefenceObjects/Turret/TurretConfig" },
+            { typeof(PuddleConfig), "Configs/DefenceObjects/Puddle/PuddleConfig" },
         };
 
         public ResourcesConfigLoader(ResourcesAssetsLoader resourcesAssetsLoader)

@@ -30,6 +30,19 @@ namespace _Project.Code.Runtime.Gameplay.DefenceFeature
             _brainsFactory = container.Resolve<BrainsFactory>();
         }
 
+        public Puddle CreatePuddle(Vector3 position, PuddleConfig config, TeamsType teamsType)
+        {
+            Puddle prefab = _resourcesAssetsLoader.Load<Puddle>("Gameplay/DefenceObjects/Puddle");
+            Puddle instance = Object.Instantiate(prefab, position, Quaternion.identity);
+            
+            instance.Initialize(
+                config.Cooldown,
+                _explosionsFactory.Create(config.Explosion),
+                teamsType);
+            
+            return instance;
+        }
+        
         public Turret CreateTurret(Vector3 position, TurretConfig config, TeamsType teamType)
         {
             Turret prefab = _resourcesAssetsLoader.Load<Turret>("Gameplay/DefenceObjects/Turret");
