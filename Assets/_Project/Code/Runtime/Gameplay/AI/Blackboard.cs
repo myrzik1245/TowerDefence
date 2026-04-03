@@ -19,7 +19,8 @@ namespace _Project.Code.Runtime.Gameplay.AI
             {
                 data = (TData)value;
                 
-                return true;
+                if (data != null)
+                    return true;
             }
 
             return false;

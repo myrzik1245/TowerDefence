@@ -20,7 +20,7 @@ namespace _Project.Code.Runtime.Gameplay.AI.States
         {
             base.Enter();
             
-            if (_blackboard.TryGetData(BlackboardKeys.Target, out Transform target) && target != null)
+            if (_blackboard.TryGetData(BlackboardKeys.Target, out Transform target))
             {
                 Vector3 position = target.position;
                 _positionAttack.Attack(position);

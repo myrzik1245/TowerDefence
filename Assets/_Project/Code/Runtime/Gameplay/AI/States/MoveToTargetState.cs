@@ -19,16 +19,13 @@ namespace _Project.Code.Runtime.Gameplay.AI.States
         {
             if (_blackboard.TryGetData(BlackboardKeys.Target, out Transform target))
             {
-                if (target != null)
-                {
-                    Vector3 direction = (target.position - _movable.Position.Value).normalized;
+                Vector3 direction = (target.position - _movable.Position.Value).normalized;
                 
-                    _movable.Move(direction, deltaTime);
-                }
-                else
-                {
-                    _movable.Move(Vector3.zero, deltaTime);
-                }
+                _movable.Move(direction, deltaTime);
+            }
+            else
+            {
+                _movable.Move(Vector3.zero, deltaTime);
             }
         }
     }

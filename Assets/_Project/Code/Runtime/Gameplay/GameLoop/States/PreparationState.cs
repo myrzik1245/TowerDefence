@@ -23,7 +23,12 @@ namespace _Project.Code.Runtime.Gameplay.GameLoop.States
 
         private readonly SelectorService<Action> _selector;
         
-        public PreparationState(IInputService inputService, DefenceObjectsFactory defenceObjectsFactory, ConfigsProvider configs, Wallet wallet, GameplayPopupService popupService)
+        public PreparationState(
+            IInputService inputService,
+            DefenceObjectsFactory defenceObjectsFactory,
+            ConfigsProvider configs,
+            Wallet wallet,
+            GameplayPopupService popupService)
         {
             _inputService = inputService;
             _defenceObjectsFactory = defenceObjectsFactory;

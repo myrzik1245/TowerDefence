@@ -19,7 +19,7 @@ namespace _Project.Code.Runtime.Gameplay.AI.States
 
         public void Update(float deltaTime)
         {
-            if (_blackboard.TryGetData(BlackboardKeys.Target, out Transform target) &&  target != null)
+            if (_blackboard.TryGetData(BlackboardKeys.Target, out Transform target))
             {
                 Vector3 direction = (target.position - _positionProvider.Position.Value).normalized;
                 _rotatable.Rotate(direction, deltaTime);

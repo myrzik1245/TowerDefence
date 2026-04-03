@@ -40,7 +40,7 @@ namespace _Project.Code.Runtime.Gameplay.AI.Brains
             ICondition rotateToEmpty = new CompositeCondition(
                 new FuncCondition(() =>
                 {
-                    if (turret.TryGetData(BlackboardKeys.Target, out Transform target) && target != null)
+                    if (turret.TryGetData(BlackboardKeys.Target, out Transform target))
                     {
                         Vector3 direction =  target.position - turret.Position.Value;
                         return Quaternion.Angle(turret.Rotation.Value, Quaternion.LookRotation(direction)) <= 5;
@@ -52,7 +52,7 @@ namespace _Project.Code.Runtime.Gameplay.AI.Brains
             ICondition emptyToRotate = new CompositeCondition(
                 new FuncCondition(() =>
                 {
-                    if (turret.TryGetData(BlackboardKeys.Target, out Transform target) && target != null)
+                    if (turret.TryGetData(BlackboardKeys.Target, out Transform target))
                     {
                         Vector3 direction =  target.position - turret.Position.Value;
                         return Quaternion.Angle(turret.Rotation.Value, Quaternion.LookRotation(direction)) > 5;
@@ -62,12 +62,12 @@ namespace _Project.Code.Runtime.Gameplay.AI.Brains
                 }));
             
             ICondition emptyToAttack = new CompositeCondition( 
-                new FuncCondition(() => turret.TryGetData(BlackboardKeys.Target, out Transform target) && target != null),
+                new FuncCondition(() => turret.TryGetData(BlackboardKeys.Target, out Transform target)),
                 new FuncCondition(() => attackCooldownTimer.IsDone.Value));
 
             ICondition attackToEmpty = new CompositeCondition( 
                 LogicOperation.Or,
-                new FuncCondition(() => turret.TryGetData(BlackboardKeys.Target, out Transform target) == false && target == null),
+                new FuncCondition(() => turret.TryGetData(BlackboardKeys.Target, out Transform target) == false),
                 new FuncCondition(() => attackCooldownTimer.IsDone.Value == false));
             
             
@@ -109,7 +109,7 @@ namespace _Project.Code.Runtime.Gameplay.AI.Brains
             ICondition emptyToMovement = new CompositeCondition(
                 new FuncCondition(() =>
                 {
-                    if (shooter.TryGetData(BlackboardKeys.Target, out Transform target) && target != null)
+                    if (shooter.TryGetData(BlackboardKeys.Target, out Transform target))
                         return Vector3.Distance(target.position, shooter.Position.Value) > config.Range;
 
                     return false;
@@ -118,7 +118,7 @@ namespace _Project.Code.Runtime.Gameplay.AI.Brains
             ICondition movementToEmpty = new CompositeCondition(
                 new FuncCondition(() =>
                 {
-                    if (shooter.TryGetData(BlackboardKeys.Target, out Transform target) && target != null)
+                    if (shooter.TryGetData(BlackboardKeys.Target, out Transform target))
                         return Vector3.Distance(shooter.Position.Value, target.position) <= config.Range;
 
                     return true;
@@ -128,7 +128,7 @@ namespace _Project.Code.Runtime.Gameplay.AI.Brains
                 new FuncCondition(() => attackCooldownTimer.IsDone.Value),
                 new FuncCondition(() =>
                 {
-                    if (shooter.TryGetData(BlackboardKeys.Target, out Transform target) && target != null)
+                    if (shooter.TryGetData(BlackboardKeys.Target, out Transform target))
                         return Vector3.Distance(shooter.Position.Value, target.position) <= config.Range;
 
                     return false;
@@ -177,9 +177,8 @@ namespace _Project.Code.Runtime.Gameplay.AI.Brains
             ICondition moveToExplosionCondition = new CompositeCondition(
                 new FuncCondition(() =>
                 {
-                    if (bomber.TryGetData(BlackboardKeys.Target, out Transform target))
-                        if (target != null)
-                            return Vector3.Distance(target.position, bomber.Position.Value) < 1f;
+                    if (bomber.TryGetData(BlackboardKeys.Target, out Transform target)) 
+                        return Vector3.Distance(target.position, bomber.Position.Value) < 1f;
 
                     return false;
                 }));
