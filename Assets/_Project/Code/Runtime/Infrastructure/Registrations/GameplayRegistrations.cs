@@ -15,8 +15,10 @@ using _Project.Code.Runtime.Utility.AssetsManagment;
 using _Project.Code.Runtime.Utility.ConfigManagment;
 using _Project.Code.Runtime.Utility.DI;
 using _Project.Code.Runtime.Utility.SceneManagment.SceneInputArgs;
-using UnityEditor;
-using UnityEngine;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Object = UnityEngine.Object;
 
 namespace _Project.Code.Runtime.Infrastructure.Registrations
 {
@@ -45,8 +47,15 @@ namespace _Project.Code.Runtime.Infrastructure.Registrations
             gameplayContainer.Register(CreateGameplayPopupService).AsSingle();
             gameplayContainer.Register(CreateUIRoot).AsSingle();
             gameplayContainer.Register(CreateGameplayPresenter).AsSingle().NonLazy();
+            gameplayContainer.Register(CreateDefenceObjectSelector).AsSingle();
         }
 
+        private static DefenceObjectsSelector CreateDefenceObjectSelector(DIContainer c)
+        {
+            return new DefenceObjectsSelector(
+                Enum.GetValues(typeof(DefenceObjectTypes)).Cast<DefenceObjectTypes>().ToArray());
+        }
+        
         private static GameplayPresenter CreateGameplayPresenter(DIContainer c)
         {
             GameplayPresentersFactory gameplayPresentersFactory = c.Resolve<GameplayPresentersFactory>();

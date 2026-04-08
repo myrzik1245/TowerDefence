@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace _Project.Code.Runtime.Gameplay.AI
 {
@@ -19,8 +20,10 @@ namespace _Project.Code.Runtime.Gameplay.AI
             {
                 data = (TData)value;
                 
-                if (data != null)
-                    return true;
+                if (data is Object objectData)
+                    return objectData != null;
+                
+                return data != null;
             }
 
             return false;

@@ -1,5 +1,7 @@
-﻿using _Project.Code.Runtime.UI.Core;
+﻿using _Project.Code.Runtime.Gameplay.DefenceFeature;
+using _Project.Code.Runtime.UI.Core;
 using _Project.Code.Runtime.UI.Core.Popup;
+using _Project.Code.Runtime.UI.Gameplay.Popups.DefenceObjectsSelectorPopup;
 using _Project.Code.Runtime.UI.Gameplay.Popups.EndGamePopup;
 using UnityEngine;
 
@@ -22,6 +24,18 @@ namespace _Project.Code.Runtime.UI.Gameplay
             _popupLayer = popupLayer;
             _gameplayPresentersFactory = gameplayPresentersFactory;
         }
+
+        public DefenceObjectsSelectorPopupPresenter OpenDefenceObjectsSelectorPopup()
+        {
+            DefenceObjectsSelectorPopupView view = _viewsFactory.Create<DefenceObjectsSelectorPopupView>(ViewIDs.DefenceObjectsSelectorPopup, _popupLayer);
+            
+            DefenceObjectsSelectorPopupPresenter presenter = _gameplayPresentersFactory.CreateDefenceObjectsSelectorPopupPresenter(view);
+            
+            OnPopupCreated(presenter, view);
+            
+            return presenter;
+        }
+        
         public EndGamePopupPresenter OpenEndGamePopup(string title)
         {
             EndGamePopupView view = _viewsFactory.Create<EndGamePopupView>(ViewIDs.EndGamePopup, _popupLayer);

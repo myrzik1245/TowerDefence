@@ -11,7 +11,7 @@ namespace _Project.Code.Runtime.UI.Core
     {
         private readonly ResourcesAssetsLoader _resourcesAssetsLoader;
 
-        private readonly Dictionary<string, string> _pathsMap = new Dictionary<string, string>()
+        private readonly Dictionary<string, string> _pathsMap = new()
         {
             { ViewIDs.MainMenu, "UI/MainMenu/MainMenuView" },
             { ViewIDs.Gameplay, "UI/Gameplay/GameplayView" },
@@ -20,6 +20,8 @@ namespace _Project.Code.Runtime.UI.Core
             { ViewIDs.EndGamePopup, "UI/Popups/EndGamePopup" },
             { ViewIDs.WalletSlot, "UI/Wallet/WalletSlotView" },
             { ViewIDs.Wallet, "UI/Wallet/WalletView" },
+            { ViewIDs.DefenceObjectsSelectorSlot, "UI/Popups/DefenceObjectsSelectorSlot" },
+            { ViewIDs.DefenceObjectsSelectorPopup, "UI/Popups/DefenceObjectsSelectorPopup" },
         };
 
         public ViewsFactory(DIContainer container)

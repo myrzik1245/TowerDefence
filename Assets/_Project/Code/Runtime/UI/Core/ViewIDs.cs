@@ -9,5 +9,7 @@
         public const string EndGamePopup = nameof(EndGamePopup);
         public const string WalletSlot = nameof(WalletSlot);
         public const string Wallet = nameof(Wallet);
+        public const string DefenceObjectsSelectorSlot = nameof(DefenceObjectsSelectorSlot);
+        public const string DefenceObjectsSelectorPopup = nameof(DefenceObjectsSelectorPopup);
     }
 }

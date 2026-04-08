@@ -54,7 +54,7 @@ namespace _Project.Code.Runtime.Gameplay.AI.Brains
                 {
                     if (turret.TryGetData(BlackboardKeys.Target, out Transform target))
                     {
-                        Vector3 direction =  target.position - turret.Position.Value;
+                        Vector3 direction = target.position - turret.Position.Value;
                         return Quaternion.Angle(turret.Rotation.Value, Quaternion.LookRotation(direction)) > 5;
                     }
 

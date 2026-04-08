@@ -1,6 +1,5 @@
 ﻿using _Project.Code.Runtime.UI.Gameplay;
 using _Project.Code.Runtime.Utility.StateMachineCore.States;
-using UnityEngine;
 
 namespace _Project.Code.Runtime.Gameplay.GameLoop.States
 {

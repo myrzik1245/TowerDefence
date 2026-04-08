@@ -21,7 +21,7 @@ namespace _Project.Code.Runtime.Utility.ConfigManagment.Loaders
             { typeof(BomberConfig), "Configs/Characters/Bomber/BomberConfig" },
             { typeof(LevelsConfig), "Configs/Levels/LevelsConfig" },
             { typeof(MineConfig), "Configs/DefenceObjects/Mine/MineConfig" },
-            { typeof(ShopConfig), "Configs/Shop/ShopConfig" },
+            { typeof(DefenceObjectShopConfig), "Configs/Shop/ShopConfig" },
             { typeof(BonusConfig), "Configs/Bonus/BonusConfig" },
             { typeof(WalletConfig), "Configs/Wallet/WalletConfig" },
             { typeof(TurretConfig), "Configs/DefenceObjects/Turret/TurretConfig" },

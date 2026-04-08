@@ -1,4 +1,6 @@
-﻿namespace _Project.Code.Runtime.Utility.Selector
+﻿using System.Collections.Generic;
+
+namespace _Project.Code.Runtime.Utility.Selector
 {
     public class SelectorService<TSelectData>
     {
@@ -9,9 +11,11 @@
         public SelectorService(params TSelectData[] datas)
         {
             _datas = datas;
-            _data = datas[0];
+            _data = _datas[0];
         }
 
+        public IReadOnlyList<TSelectData> Datas => _datas;
+        
         public TSelectData Get()
         {
             return _data;

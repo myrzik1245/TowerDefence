@@ -28,6 +28,7 @@ namespace _Project.Code.Runtime.Gameplay.GameLoop
         private readonly PlayerDataProvider _playerDataProvider;
         private readonly BrainsContext _brainsContext;
         private readonly GameplayPopupService _gameplayPopupService;
+        private readonly DefenceObjectsSelector _defenceObjectsSelector;
         
         public GameplayStatesFactory(DIContainer container)
         {
@@ -42,6 +43,7 @@ namespace _Project.Code.Runtime.Gameplay.GameLoop
             _playerDataProvider = container.Resolve<PlayerDataProvider>();
             _brainsContext = container.Resolve<BrainsContext>();
             _gameplayPopupService = container.Resolve<GameplayPopupService>();
+            _defenceObjectsSelector = container.Resolve<DefenceObjectsSelector>();
         }
 
         public GameplayStateMachine CreateGameplayStateMachine()
@@ -94,7 +96,8 @@ namespace _Project.Code.Runtime.Gameplay.GameLoop
                 _defenceObjectsFactory,
                 _configsProvider,
                 _wallet,
-                _gameplayPopupService);
+                _gameplayPopupService,
+                _defenceObjectsSelector);
             
             ICondition stageToPreparation = new CompositeCondition(
                 new FuncCondition(() => _stageService.IsCompleate.Value),

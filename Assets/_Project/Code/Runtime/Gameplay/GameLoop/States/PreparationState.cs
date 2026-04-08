@@ -5,6 +5,7 @@ using _Project.Code.Runtime.Gameplay.DefenceFeature;
 using _Project.Code.Runtime.Gameplay.TeamFeature;
 using _Project.Code.Runtime.Meta.WalletFeature;
 using _Project.Code.Runtime.UI.Gameplay;
+using _Project.Code.Runtime.UI.Gameplay.Popups.DefenceObjectsSelectorPopup;
 using _Project.Code.Runtime.Utility.ConfigManagment;
 using _Project.Code.Runtime.Utility.Extensions;
 using _Project.Code.Runtime.Utility.InputService;
@@ -20,33 +21,33 @@ namespace _Project.Code.Runtime.Gameplay.GameLoop.States
         private readonly ConfigsProvider _configs;
         private readonly Wallet _wallet;
         private readonly GameplayPopupService _popupService;
+        private readonly DefenceObjectsSelector _selector;
+        private DefenceObjectsSelectorPopupPresenter _defenceObjectsSelectorPopupPresenter;
 
-        private readonly SelectorService<Action> _selector;
         
         public PreparationState(
             IInputService inputService,
             DefenceObjectsFactory defenceObjectsFactory,
             ConfigsProvider configs,
             Wallet wallet,
-            GameplayPopupService popupService)
+            GameplayPopupService popupService,
+            DefenceObjectsSelector defenceObjectsSelector)
         {
             _inputService = inputService;
             _defenceObjectsFactory = defenceObjectsFactory;
             _configs = configs;
             _wallet = wallet;
             _popupService = popupService;
-            
-            _selector = new SelectorService<Action>(
-                BuyAndPlacePuddle);
+            _selector = defenceObjectsSelector;
         }
 
         public bool Continue { get; private set; }
-        private ShopConfig ShopConfig => _configs.GetConfig<ShopConfig>();
+        private DefenceObjectShopConfig DefenceObjectShopConfig => _configs.GetConfig<DefenceObjectShopConfig>();
 
         public void Update(float deltaTime)
         {
             if (_inputService.Attack.Down && _inputService.IsCursorOverUI == false)
-                _selector.Get().Invoke();
+                TryCreate(_selector.Get());
         }
 
         public override void Enter()
@@ -54,26 +55,50 @@ namespace _Project.Code.Runtime.Gameplay.GameLoop.States
             base.Enter();
             
             _popupService.OpenContinuePopup(() => Continue = true);
+            _defenceObjectsSelectorPopupPresenter = _popupService.OpenDefenceObjectsSelectorPopup();
         }
 
         public override void Exit()
         {
             base.Exit();
             
+            _popupService.Close(_defenceObjectsSelectorPopupPresenter);
+            
             Continue = false;
         }
 
-        private bool CanBuy(ShopItem shopItem)
+        private void TryCreate(DefenceObjectTypes type)
         {
-            return _wallet.Enough(CurrencyType.Soft, _configs.GetConfig<ShopConfig>().GetPrice(shopItem));
+            switch (type)
+            {
+                case DefenceObjectTypes.Mine:
+                    TryBuyAndPlaceMine(type);
+                    break;
+                
+                case DefenceObjectTypes.Puddle:
+                    TryBuyAndPlacePuddle(type);
+                    break;
+                
+                case DefenceObjectTypes.Turret:
+                    TryBuyAndPlaceTurret(type);
+                    break;
+                
+                default:
+                    throw new NotSupportedException($"Defence Object type {type.GetType()} not supported");
+            }
+        }
+        
+        private bool CanBuy(DefenceObjectTypes type)
+        {
+            return _wallet.Enough(CurrencyType.Soft, _configs.GetConfig<DefenceObjectShopConfig>().GetPrice(type));
         }
 
-        private void BuyAndPlacePuddle()
+        private void TryBuyAndPlacePuddle(DefenceObjectTypes type)
         {
             PuddleConfig puddleConfig = _configs.GetConfig<PuddleConfig>();
-            int price = ShopConfig.GetPrice(puddleConfig);
+            int price = DefenceObjectShopConfig.GetPrice(type);
 
-            if (CanBuy(puddleConfig))
+            if (CanBuy(type))
             {
                 _defenceObjectsFactory.CreatePuddle(
                     VectorExtensions.CameraToWorldPoint(_inputService.MousePosition),
@@ -84,12 +109,12 @@ namespace _Project.Code.Runtime.Gameplay.GameLoop.States
             }
         }
         
-        private void BuyAndPlaceTurret()
+        private void TryBuyAndPlaceTurret(DefenceObjectTypes type)
         {
             TurretConfig turretConfig = _configs.GetConfig<TurretConfig>();
-            int price = ShopConfig.GetPrice(turretConfig);
+            int price = DefenceObjectShopConfig.GetPrice(type);
 
-            if (CanBuy(turretConfig))
+            if (CanBuy(type))
             {
                 _defenceObjectsFactory.CreateTurret(
                     VectorExtensions.CameraToWorldPoint(_inputService.MousePosition),
@@ -100,12 +125,12 @@ namespace _Project.Code.Runtime.Gameplay.GameLoop.States
             }
         }
         
-        private void BuyAndPlaceMine()
+        private void TryBuyAndPlaceMine(DefenceObjectTypes type)
         {
             MineConfig mineConfig = _configs.GetConfig<MineConfig>();
-            int price = ShopConfig.GetPrice(mineConfig);
+            int price = DefenceObjectShopConfig.GetPrice(type);
                 
-            if (CanBuy(mineConfig))
+            if (CanBuy(type))
             {
                 _defenceObjectsFactory.CreateMine( 
                     VectorExtensions.CameraToWorldPoint(_inputService.MousePosition),
