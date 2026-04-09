@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82b58208703f494ca77ef6b5ead681c3, type: 3}
   m_Name: BonusConfig
   m_EditorClassIdentifier: 
-  <WinBonus>k__BackingField: 100
+  <SoftWinBonus>k__BackingField: 100
+  <HardWinBonus>k__BackingField: 50

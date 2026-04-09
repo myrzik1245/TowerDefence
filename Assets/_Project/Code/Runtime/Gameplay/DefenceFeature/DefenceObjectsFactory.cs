@@ -9,6 +9,7 @@ using _Project.Code.Runtime.Gameplay.TeamFeature;
 using _Project.Code.Runtime.Utility.AssetsManagment;
 using _Project.Code.Runtime.Utility.CoroutineManagment;
 using _Project.Code.Runtime.Utility.DI;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace _Project.Code.Runtime.Gameplay.DefenceFeature
@@ -20,6 +21,7 @@ namespace _Project.Code.Runtime.Gameplay.DefenceFeature
         private readonly ICoroutinePerformer _coroutinePerformer;
         private readonly AttackFactory _attackFactory;
         private readonly BrainsFactory _brainsFactory;
+        private readonly List<IClearOnStage> _clearOnStages = new();
 
         public DefenceObjectsFactory(DIContainer container)
         {
@@ -39,6 +41,8 @@ namespace _Project.Code.Runtime.Gameplay.DefenceFeature
                 config.Cooldown,
                 _explosionsFactory.Create(config.Explosion),
                 teamsType);
+            
+            _clearOnStages.Add(instance);
             
             return instance;
         }
@@ -71,6 +75,14 @@ namespace _Project.Code.Runtime.Gameplay.DefenceFeature
                 config);
             
             return instance;
+        }
+
+        public void Clear()
+        {
+            foreach (IClearOnStage clearable in _clearOnStages)
+                clearable.Release();
+            
+            _clearOnStages.Clear();
         }
     }
 }

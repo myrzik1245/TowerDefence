@@ -37,7 +37,8 @@ namespace _Project.Code.Runtime.Gameplay.GameLoop.States
         {
             base.Enter();
             
-            _wallet.Add(CurrencyType.Soft, _configsProvider.GetConfig<BonusConfig>().WinBonus);
+            _wallet.Add(CurrencyType.Soft, _configsProvider.GetConfig<BonusConfig>().SoftWinBonus);
+            _wallet.Add(CurrencyType.Hard, _configsProvider.GetConfig<BonusConfig>().HardWinBonus);
             _winLoseCounter.AddWin();
             
             _coroutinePerformer.StartPerform(_playerDataProvider.Save());

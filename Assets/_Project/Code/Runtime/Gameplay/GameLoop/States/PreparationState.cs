@@ -9,7 +9,6 @@ using _Project.Code.Runtime.UI.Gameplay.Popups.DefenceObjectsSelectorPopup;
 using _Project.Code.Runtime.Utility.ConfigManagment;
 using _Project.Code.Runtime.Utility.Extensions;
 using _Project.Code.Runtime.Utility.InputService;
-using _Project.Code.Runtime.Utility.Selector;
 using _Project.Code.Runtime.Utility.StateMachineCore.States;
 
 namespace _Project.Code.Runtime.Gameplay.GameLoop.States

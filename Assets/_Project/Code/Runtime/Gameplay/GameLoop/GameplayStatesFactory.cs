@@ -89,7 +89,7 @@ namespace _Project.Code.Runtime.Gameplay.GameLoop
 
         private GameplayStateMachine CreateGameLoop()
         {
-            StageState stageState = new StageState(_stageService, _brainsContext);
+            StageState stageState = new StageState(_stageService, _brainsContext, _defenceObjectsFactory);
             
             PreparationState preparationState = new PreparationState(
                 _inputService,

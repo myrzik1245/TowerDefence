@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace _Project.Code.Runtime.Gameplay.DefenceFeature.Objects
 {
-    public class Puddle : MonoBehaviour, ITeam, IExplosion, IInitializableCharacter
+    public class Puddle : MonoBehaviour, ITeam, IExplosion, IInitializableCharacter, IClearOnStage
     {
         private float _cooldown;
         private Explosion _explosion;
@@ -38,6 +38,11 @@ namespace _Project.Code.Runtime.Gameplay.DefenceFeature.Objects
                 _time = 0;
                 _explosion.Execute(transform.position, this);
             }
+        }
+        
+        public void Release()
+        {
+            Destroy(gameObject);
         }
     }
 }

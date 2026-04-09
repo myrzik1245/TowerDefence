@@ -1,4 +1,5 @@
 ﻿using _Project.Code.Runtime.Gameplay.AI.Brains;
+using _Project.Code.Runtime.Gameplay.DefenceFeature;
 using _Project.Code.Runtime.Gameplay.StageFeature;
 using _Project.Code.Runtime.Utility.StateMachineCore.States;
 
@@ -8,11 +9,13 @@ namespace _Project.Code.Runtime.Gameplay.GameLoop.States
     {
         private readonly StageService _stageService;
         private readonly BrainsContext _brainsContext;
+        private readonly DefenceObjectsFactory _defenceObjectsFactory;
         
-        public StageState(StageService stageService, BrainsContext brainsContext)
+        public StageState(StageService stageService, BrainsContext brainsContext, DefenceObjectsFactory defenceObjectsFactory)
         {
             _stageService = stageService;
             _brainsContext = brainsContext;
+            _defenceObjectsFactory = defenceObjectsFactory;
         }
 
         public override void Enter()
@@ -24,6 +27,7 @@ namespace _Project.Code.Runtime.Gameplay.GameLoop.States
         public override void Exit()
         {
             _stageService.CleanUp();
+            _defenceObjectsFactory.Clear();
         }
         
         public void Update(float deltaTime)
