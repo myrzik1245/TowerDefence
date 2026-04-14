@@ -1,5 +1,6 @@
 ﻿using _Project.Code.Runtime.Configs.Characters;
 using _Project.Code.Runtime.Gameplay.AttackFeature.Core;
+using _Project.Code.Runtime.Gameplay.StatsFeature;
 using _Project.Code.Runtime.Gameplay.TeamFeature;
 using _Project.Code.Runtime.Utility.AssetsManagment;
 using _Project.Code.Runtime.Utility.CoroutineManagment;
@@ -14,26 +15,31 @@ namespace _Project.Code.Runtime.Gameplay.Characters
         private readonly ResourcesAssetsLoader _resourcesAssetsLoader;
         private readonly AttackFactory _attackFactory;
         private readonly ICoroutinePerformer _coroutinePerformer;
+        private readonly StatsFactory _statsFactory;
 
         public CharactersFactory(DIContainer container)
         {
             _resourcesAssetsLoader = container.Resolve<ResourcesAssetsLoader>();
             _attackFactory = container.Resolve<AttackFactory>();
             _coroutinePerformer = container.Resolve<ICoroutinePerformer>();
+            _statsFactory = container.Resolve<StatsFactory>();
         }
 
         public Shooter CreateShooter(ShooterConfig config, Vector3 position, TeamsType teamType)
         {
             Shooter prefab = _resourcesAssetsLoader.Load<Shooter>(config.PrefabPath);
             Shooter instance = Object.Instantiate(prefab, position, Quaternion.identity);
+            
+            Stats stats = _statsFactory.CreateShooterStats(config);
+            
             instance.Initialize(
                 _coroutinePerformer,
                 teamType,
+                stats,
                 _attackFactory.CreateExplosionAttack(
                     config.ExplosionConfig,
-                    instance.GetComponent<ITeam>()),
-                config.HealthConfigData.StartHealth,
-                config.HealthConfigData.MaxHealth,
+                    instance,
+                    stats),
                 config.MovementConfigData.Speed,
                 config.MovementConfigData.Smooth,
                 config.RotatorConfigData.Speed,
@@ -47,13 +53,16 @@ namespace _Project.Code.Runtime.Gameplay.Characters
         {
             Tower prefab = _resourcesAssetsLoader.Load<Tower>(towerConfig.PrefabPath);
             Tower instance = Object.Instantiate(prefab, position, Quaternion.identity);
+
+            Stats stats = _statsFactory.CreateTowerStats(towerConfig);
+            
             instance.Initialize(
                 _coroutinePerformer,
-                towerConfig.HealthConfigData.StartHealth,
-                towerConfig.HealthConfigData.MaxHealth,
+                stats,
                 _attackFactory.CreateExplosionAttack(
                     towerConfig.ExplosionConfig,
-                    instance.GetComponent<ITeam>()),
+                    instance,
+                    stats),
                 teamType,
                 towerConfig.SpawnTime,
                 towerConfig.AttackTime);
@@ -66,13 +75,15 @@ namespace _Project.Code.Runtime.Gameplay.Characters
             Bomber prefab = _resourcesAssetsLoader.Load<Bomber>(bomberConfig.PrefabPath);
             Bomber instance = Object.Instantiate(prefab, position, Quaternion.identity);
 
+            Stats stats = _statsFactory.CreateBomberStats(bomberConfig);
+            
             instance.Initialize(
                 _coroutinePerformer,
-                bomberConfig.HealthConfigData.StartHealth,
-                bomberConfig.HealthConfigData.MaxHealth,
+                stats,
                 _attackFactory.CreateExplosionAttack(
                     bomberConfig.ExplosionConfig, 
-                    instance.GetComponent<ITeam>()),
+                    instance,
+                    stats),
                 bomberConfig.MovementConfigData.Speed,
                 bomberConfig.MovementConfigData.Smooth,
                 bomberConfig.RotatorConfigData.Speed,

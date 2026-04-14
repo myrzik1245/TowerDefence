@@ -1,18 +1,20 @@
-﻿using _Project.Code.Runtime.Utility.Reactive.Variable;
+﻿using _Project.Code.Runtime.Gameplay.StatsFeature;
+using _Project.Code.Runtime.Utility.Reactive.Variable;
 using System;
 
 namespace _Project.Code.Runtime.Gameplay.HealthFeature
 {
     public class Health : IReadOnlyHealth
     {
-        private ReactiveVariable<bool> _isDead;
-        private ReactiveVariable<int> _currentHealth;
-        private ReactiveVariable<int> _maxHealth;
+        private readonly ReactiveVariable<bool> _isDead;
+        private readonly ReactiveVariable<int> _currentHealth;
+        private readonly ReactiveVariable<int> _maxHealth;
 
-        public Health(int startHealth, int maxHealth)
+        public Health(Stat healthStat, Stat maxHealthStat)
         {
-            _currentHealth = new ReactiveVariable<int>(startHealth);
-            _maxHealth = new ReactiveVariable<int>(maxHealth);
+            _currentHealth = healthStat.ModifiedStat;
+            _maxHealth = maxHealthStat.ModifiedStat;
+            
             _isDead =  new ReactiveVariable<bool>();
         }
 

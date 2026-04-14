@@ -4,6 +4,7 @@ using _Project.Code.Runtime.Gameplay.AttackFeature.Explosion;
 using _Project.Code.Runtime.Gameplay.HealthFeature;
 using _Project.Code.Runtime.Gameplay.MovementFeature;
 using _Project.Code.Runtime.Gameplay.ProcessFeature;
+using _Project.Code.Runtime.Gameplay.StatsFeature;
 using _Project.Code.Runtime.Gameplay.TeamFeature;
 using _Project.Code.Runtime.Utility.CoroutineManagment;
 using _Project.Code.Runtime.Utility.Reactive.Event;
@@ -14,7 +15,7 @@ using UnityEngine;
 namespace _Project.Code.Runtime.Gameplay.Characters
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class Bomber : MonoBehaviour, ICharacter, IMovable, IRotatable, IExplosion, IAttack
+    public class Bomber : MonoBehaviour, ICharacter, IMovable, IRotatable, IExplosion, IAttack, IStatsProvider
     {
         private Health _health;
         private ExplosionAttack _attack;
@@ -22,6 +23,7 @@ namespace _Project.Code.Runtime.Gameplay.Characters
         private RigidbodyRotator _rigidbodyRotator;
         private Process _spawnProcess;
         private ICoroutinePerformer _coroutinePerformer;
+        private Stats _stats;
         
         private readonly Blackboard _blackboard = new();
         private readonly ReactiveVariable<bool> _initialized = new();
@@ -43,8 +45,7 @@ namespace _Project.Code.Runtime.Gameplay.Characters
 
         public void Initialize(
             ICoroutinePerformer coroutinePerformer,
-            int startHealth,
-            int maxHealth,
+            Stats stats,
             ExplosionAttack attack,
             float moveSpeed,
             float moveSmooth,
@@ -54,9 +55,10 @@ namespace _Project.Code.Runtime.Gameplay.Characters
         {
             _coroutinePerformer = coroutinePerformer;
             _attack = attack;
+            _stats = stats;
             TeamType = teamType;
 
-            _health = new Health(startHealth, maxHealth);
+            _health = new Health(_stats.Get(StatTypes.Health), _stats.Get(StatTypes.MaxHealth));
             
             _rigidbodyMover = new RigidbodyMover(
                 GetComponent<Rigidbody>(),
@@ -123,6 +125,11 @@ namespace _Project.Code.Runtime.Gameplay.Characters
         public bool TryGetData<TData>(string key, out TData data)
         {
             return _blackboard.TryGetData(key, out data);
+        }
+        
+        public Stat Get(StatTypes statType)
+        {
+            return _stats.Get(statType);
         }
         
         private void OnDestroy()

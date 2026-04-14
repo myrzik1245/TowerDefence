@@ -9,6 +9,7 @@ using _Project.Code.Runtime.Utility.Reactive.Event;
 using _Project.Code.Runtime.Utility.Reactive.Variable;
 using System;
 using _Project.Code.Runtime.Gameplay.AttackFeature.Core;
+using _Project.Code.Runtime.Gameplay.StatsFeature;
 using UnityEngine;
 
 namespace _Project.Code.Runtime.Gameplay.Characters
@@ -43,9 +44,8 @@ namespace _Project.Code.Runtime.Gameplay.Characters
         public void Initialize(
             ICoroutinePerformer coroutinePerformer,
             TeamsType teamType,
+            Stats stats,
             IAttack attack,
-            int startHealth,
-            int maxHealth,
             float moveSpeed,
             float moveSmooth,
             float rotationSpeed,
@@ -55,9 +55,7 @@ namespace _Project.Code.Runtime.Gameplay.Characters
             _coroutinePerformer = coroutinePerformer;
             TeamType = teamType;
 
-            _health = new Health(
-                startHealth,
-                maxHealth);
+            _health = new Health(stats.Get(StatTypes.Health), stats.Get(StatTypes.MaxHealth));
 
             _positionAttack = new PositionAttack(
                 _coroutinePerformer,

@@ -1,8 +1,6 @@
-using _Project.Code.Runtime.Configs.Characters;
 using _Project.Code.Runtime.Configs.Defence;
 using _Project.Code.Runtime.Gameplay.AI.Brains;
 using _Project.Code.Runtime.Gameplay.AttackFeature.Core;
-using _Project.Code.Runtime.Gameplay.Characters;
 using _Project.Code.Runtime.Gameplay.DefenceFeature.Objects;
 using _Project.Code.Runtime.Gameplay.ExplosionFeature;
 using _Project.Code.Runtime.Gameplay.TeamFeature;
@@ -68,7 +66,7 @@ namespace _Project.Code.Runtime.Gameplay.DefenceFeature
         {
             Mine prefab = _resourcesAssetsLoader.Load<Mine>("Gameplay/DefenceObjects/Mine");
             Mine instance = Object.Instantiate(prefab, position, Quaternion.identity);
-            
+
             instance.Initialize(
                 _explosionsFactory.Create(config.Explosion),
                 teamType,

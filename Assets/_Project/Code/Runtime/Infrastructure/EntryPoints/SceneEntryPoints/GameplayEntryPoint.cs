@@ -1,6 +1,8 @@
 ﻿using _Project.Code.Runtime.Gameplay.AI.Brains;
+using _Project.Code.Runtime.Gameplay.Characters;
 using _Project.Code.Runtime.Gameplay.GameLoop;
 using _Project.Code.Runtime.Gameplay.MainHero;
+using _Project.Code.Runtime.Gameplay.StatsFeature;
 using _Project.Code.Runtime.Infrastructure.Registrations;
 using _Project.Code.Runtime.Utility.DI;
 using _Project.Code.Runtime.Utility.SceneManagment.SceneInputArgs;
@@ -16,6 +18,7 @@ namespace _Project.Code.Runtime.Infrastructure.EntryPoints.SceneEntryPoints
         private IUpdatableService _updatableService;
         private BrainsContext _brainsContext;
         private GameplayStateMachine _gameLoop;
+        private Tower _hero;
 
         public override IEnumerator Initialize(DIContainer container, IInputSceneArgs inputSceneArgs)
         {
@@ -30,7 +33,7 @@ namespace _Project.Code.Runtime.Infrastructure.EntryPoints.SceneEntryPoints
             GameplayStatesFactory gameplayStatesFactory = container.Resolve<GameplayStatesFactory>();
             MainHeroFactory mainHeroFactory = container.Resolve<MainHeroFactory>();
 
-            mainHeroFactory.CreateTower(Vector3.zero);
+            _hero = mainHeroFactory.CreateTower(Vector3.zero);
             
             _gameLoop = gameplayStatesFactory.CreateGameplayStateMachine();
             
@@ -42,6 +45,10 @@ namespace _Project.Code.Runtime.Infrastructure.EntryPoints.SceneEntryPoints
         public override void Run()
         {
             _gameLoop.Enter();
+            
+            _hero.ChangeStat(StatTypes.MaxHealth, maxHealth => maxHealth * 10);
+            _hero.ChangeStat(StatTypes.Health, health => health * 5);
+            _hero.ChangeStat(StatTypes.Damage, damage => damage * 10);
         }
         
 

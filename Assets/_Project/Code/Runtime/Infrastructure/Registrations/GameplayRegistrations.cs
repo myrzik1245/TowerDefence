@@ -9,6 +9,7 @@ using _Project.Code.Runtime.Gameplay.GameLoop;
 using _Project.Code.Runtime.Gameplay.MainHero;
 using _Project.Code.Runtime.Gameplay.SpawnerFeature;
 using _Project.Code.Runtime.Gameplay.StageFeature;
+using _Project.Code.Runtime.Gameplay.StatsFeature;
 using _Project.Code.Runtime.UI.Core;
 using _Project.Code.Runtime.UI.Gameplay;
 using _Project.Code.Runtime.Utility.AssetsManagment;
@@ -16,7 +17,6 @@ using _Project.Code.Runtime.Utility.ConfigManagment;
 using _Project.Code.Runtime.Utility.DI;
 using _Project.Code.Runtime.Utility.SceneManagment.SceneInputArgs;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Object = UnityEngine.Object;
 
@@ -48,8 +48,14 @@ namespace _Project.Code.Runtime.Infrastructure.Registrations
             gameplayContainer.Register(CreateUIRoot).AsSingle();
             gameplayContainer.Register(CreateGameplayPresenter).AsSingle().NonLazy();
             gameplayContainer.Register(CreateDefenceObjectSelector).AsSingle();
+            gameplayContainer.Register(CreateStatsFactory).AsSingle();
         }
 
+        private static StatsFactory CreateStatsFactory(DIContainer c)
+        {
+            return new StatsFactory();
+        }
+        
         private static DefenceObjectsSelector CreateDefenceObjectSelector(DIContainer c)
         {
             return new DefenceObjectsSelector(
