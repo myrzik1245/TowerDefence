@@ -39,6 +39,7 @@ namespace _Project.Code.Runtime.Gameplay.Characters
         public IReadOnlyReactiveVariable<Vector3> MoveDirection => _rigidbodyMover.Direction;
         public IReadOnlyReactiveVariable<Quaternion> Rotation => _rigidbodyRotator.Rotation;
         public IReadOnlyReactiveEvent<PositionAttackProcess> PositionAttacked => _positionAttack.PositionAttacked;
+        public IReadOnlyReactiveEvent Attacked => _positionAttack.Attacked;
         public TeamsType TeamType { get; private set; }
 
         public void Initialize(
@@ -114,7 +115,7 @@ namespace _Project.Code.Runtime.Gameplay.Characters
         {
             _rigidbodyRotator.Rotate(direction, deltaTime);
         }
-        
+
         public void Attack(Vector3 position)
         {
             if (_isSpawned.Value == false)

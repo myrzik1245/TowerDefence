@@ -1,4 +1,5 @@
 using _Project.Code.Runtime.Configs;
+using _Project.Code.Runtime.Configs.Abilities;
 using _Project.Code.Runtime.Configs.Characters;
 using _Project.Code.Runtime.Configs.Level;
 using _Project.Code.Runtime.Configs.Shop;
@@ -26,6 +27,7 @@ namespace _Project.Code.Runtime.Utility.ConfigManagment.Loaders
             { typeof(WalletConfig), "Configs/Wallet/WalletConfig" },
             { typeof(TurretConfig), "Configs/DefenceObjects/Turret/TurretConfig" },
             { typeof(PuddleConfig), "Configs/DefenceObjects/Puddle/PuddleConfig" },
+            { typeof(AbilityContainer), "Configs/Ability/AbilityContainer" },
         };
 
         public ResourcesConfigLoader(ResourcesAssetsLoader resourcesAssetsLoader)

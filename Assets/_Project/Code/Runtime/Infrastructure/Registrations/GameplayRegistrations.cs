@@ -1,4 +1,5 @@
 ﻿using _Project.Code.Runtime.Configs.Level;
+using _Project.Code.Runtime.Gameplay.AbilityFeature;
 using _Project.Code.Runtime.Gameplay.AI.Brains;
 using _Project.Code.Runtime.Gameplay.AttackFeature.Core;
 using _Project.Code.Runtime.Gameplay.Characters;
@@ -49,8 +50,24 @@ namespace _Project.Code.Runtime.Infrastructure.Registrations
             gameplayContainer.Register(CreateGameplayPresenter).AsSingle().NonLazy();
             gameplayContainer.Register(CreateDefenceObjectSelector).AsSingle();
             gameplayContainer.Register(CreateStatsFactory).AsSingle();
+            gameplayContainer.Register(CreateAbilityService).AsSingle().NonLazy();
+            gameplayContainer.Register(CreateAbilitiesFactory).AsSingle();
         }
 
+        private static AbilitiesFactory CreateAbilitiesFactory(DIContainer c)
+        {
+            return new AbilitiesFactory(
+                c.Resolve<AbilitiesContext>(),
+                c.Resolve<EnemiesFactory>());
+        }
+        
+        private static AbilitiesContext CreateAbilityService(DIContainer c)
+        {
+            return new AbilitiesContext(
+                c.Resolve<StageService>(),
+                c.Resolve<MainHeroService>());
+        }
+        
         private static StatsFactory CreateStatsFactory(DIContainer c)
         {
             return new StatsFactory();

@@ -9,18 +9,21 @@ namespace _Project.Code.Runtime.Gameplay.AttackFeature.Explosion
     {
         private readonly ExplosionFeature.Explosion _explosion;
         private readonly ITeam _sourceTeam;
+        private readonly ReactiveEvent _attacked = new();
         
         public IReadOnlyReactiveEvent<Vector3> AttackExecuted => _explosion.AttackExecuted;
+        public IReadOnlyReactiveEvent Attacked => _attacked;
         
         public ExplosionAttack(ExplosionFeature.Explosion explosion, ITeam sourceTeam)
         {
             _explosion = explosion;
             _sourceTeam = sourceTeam;
         }
-        
+
         public void Attack(Vector3 position)
         {
             _explosion.Execute(position, _sourceTeam);
+            _attacked.Invoke();
         }
     }
 }

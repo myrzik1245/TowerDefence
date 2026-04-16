@@ -2,6 +2,7 @@
 using _Project.Code.Runtime.Gameplay.AttackFeature.Core;
 using _Project.Code.Runtime.Gameplay.AttackFeature.Position;
 using _Project.Code.Runtime.Gameplay.HealthFeature;
+using _Project.Code.Runtime.Gameplay.MainHero;
 using _Project.Code.Runtime.Gameplay.ProcessFeature;
 using _Project.Code.Runtime.Gameplay.StatsFeature;
 using _Project.Code.Runtime.Gameplay.TeamFeature;
@@ -13,7 +14,7 @@ using UnityEngine;
 
 namespace _Project.Code.Runtime.Gameplay.Characters
 {
-    public class Tower : MonoBehaviour, ICharacter, IHelable, IPositionAttack, IStatsChangeable, IStatsProvider
+    public class Tower : MonoBehaviour, IMainHero, IHealable, IPositionAttack, IStatsProvider
     {
         [SerializeField] private Transform _shootPoint;
         
@@ -36,6 +37,7 @@ namespace _Project.Code.Runtime.Gameplay.Characters
         public IReadOnlyReactiveVariable<bool> IsInitialized => _initialized;
         public IReadOnlyReactiveVariable<bool> IsSpawned => _spawned;
         public IReadOnlyReactiveEvent<PositionAttackProcess> PositionAttacked => _positionAttack.PositionAttacked;
+        public IReadOnlyReactiveEvent Attacked => _positionAttack.Attacked;
         
         public void Initialize(
             ICoroutinePerformer coroutinePerformer,
@@ -123,7 +125,7 @@ namespace _Project.Code.Runtime.Gameplay.Characters
         {
             return _stats.Get(statType);
         }
-
+        
         private void OnDestroy()
         {
             _isDeadSubscription?.Dispose();

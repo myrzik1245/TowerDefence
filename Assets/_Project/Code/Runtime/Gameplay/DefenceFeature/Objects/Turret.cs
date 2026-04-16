@@ -30,6 +30,7 @@ namespace _Project.Code.Runtime.Gameplay.DefenceFeature.Objects
         public IReadOnlyReactiveVariable<Vector3> Position => _position;
         public TeamsType TeamType { get; private set; }
         public bool IsDestroyed { get; private set; }
+        public IReadOnlyReactiveEvent Attacked => _positionAttack.Attacked;
 
         public void Initialize(
             float rotationSpeed,

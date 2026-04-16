@@ -23,6 +23,7 @@ namespace _Project.Code.Runtime.Gameplay.AttackFeature.Position
         }
 
         public IReadOnlyReactiveEvent<PositionAttackProcess> PositionAttacked => _positionAttacked;
+        public IReadOnlyReactiveEvent Attacked => _attack.Attacked;
         
         public void Attack(Vector3 position)
         {

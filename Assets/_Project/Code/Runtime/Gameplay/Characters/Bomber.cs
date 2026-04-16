@@ -38,7 +38,8 @@ namespace _Project.Code.Runtime.Gameplay.Characters
         public IReadOnlyReactiveVariable<bool> IsInitialized => _initialized;
         public IReadOnlyReactiveVariable<bool> IsSpawned => _spawned;
         public IReadOnlyReactiveEvent<Vector3> AttackExecuted => _attack.AttackExecuted;
-        
+        public IReadOnlyReactiveEvent Attacked => _attack.Attacked;
+
         public TeamsType TeamType { get; private set; }
 
         private IDisposable _isDeathSubscription;

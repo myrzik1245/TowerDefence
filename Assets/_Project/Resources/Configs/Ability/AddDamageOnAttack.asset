@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59b35d36b5084468a5a6ee23143564e3, type: 3}
+  m_Name: AddDamageOnAttack
+  m_EditorClassIdentifier: 
+  <ID>k__BackingField: damage
+  <Event>k__BackingField: 1
+  <StatType>k__BackingField: 3
+  <Modifier>k__BackingField:
+    _operation: 3
+    _value: 30

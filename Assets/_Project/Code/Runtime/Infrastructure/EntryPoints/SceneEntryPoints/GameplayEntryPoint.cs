@@ -1,9 +1,11 @@
-﻿using _Project.Code.Runtime.Gameplay.AI.Brains;
+﻿using _Project.Code.Runtime.Configs.Abilities;
+using _Project.Code.Runtime.Gameplay.AbilityFeature;
+using _Project.Code.Runtime.Gameplay.AI.Brains;
 using _Project.Code.Runtime.Gameplay.Characters;
 using _Project.Code.Runtime.Gameplay.GameLoop;
 using _Project.Code.Runtime.Gameplay.MainHero;
-using _Project.Code.Runtime.Gameplay.StatsFeature;
 using _Project.Code.Runtime.Infrastructure.Registrations;
+using _Project.Code.Runtime.Utility.ConfigManagment;
 using _Project.Code.Runtime.Utility.DI;
 using _Project.Code.Runtime.Utility.SceneManagment.SceneInputArgs;
 using _Project.Code.Runtime.Utility.Update;
@@ -18,6 +20,8 @@ namespace _Project.Code.Runtime.Infrastructure.EntryPoints.SceneEntryPoints
         private IUpdatableService _updatableService;
         private BrainsContext _brainsContext;
         private GameplayStateMachine _gameLoop;
+        private AbilitiesFactory _abilitiesFactory;
+        private ConfigsProvider _configsProvider;
         private Tower _hero;
 
         public override IEnumerator Initialize(DIContainer container, IInputSceneArgs inputSceneArgs)
@@ -29,15 +33,23 @@ namespace _Project.Code.Runtime.Infrastructure.EntryPoints.SceneEntryPoints
             container.Initialize();
 
             _updatableService = container.Resolve<IUpdatableService>();
+            _abilitiesFactory = container.Resolve<AbilitiesFactory>();
+            _configsProvider = container.Resolve<ConfigsProvider>();
             
             GameplayStatesFactory gameplayStatesFactory = container.Resolve<GameplayStatesFactory>();
             MainHeroFactory mainHeroFactory = container.Resolve<MainHeroFactory>();
-
+            
             _hero = mainHeroFactory.CreateTower(Vector3.zero);
             
             _gameLoop = gameplayStatesFactory.CreateGameplayStateMachine();
             
             _updatableService.AddRequest(_gameLoop);
+            
+            AbilityContainer abilityContainer = _configsProvider.GetConfig<AbilityContainer>();
+            
+            _abilitiesFactory.CreateChangeStatsAbility(_hero, abilityContainer.GetConfigById<ChangeStatAbilityConfig>("damage"));
+            _abilitiesFactory.CreateHealAbility(_hero, _hero, abilityContainer.GetConfigById<HealAbilityConfig>("heal"));
+            _abilitiesFactory.CreateDamageEnemyAbility(abilityContainer.GetConfigById<DamageEnemyAbilityConfig>("damageEnemy"));
             
             yield break;
         }
@@ -45,10 +57,6 @@ namespace _Project.Code.Runtime.Infrastructure.EntryPoints.SceneEntryPoints
         public override void Run()
         {
             _gameLoop.Enter();
-            
-            _hero.ChangeStat(StatTypes.MaxHealth, maxHealth => maxHealth * 10);
-            _hero.ChangeStat(StatTypes.Health, health => health * 5);
-            _hero.ChangeStat(StatTypes.Damage, damage => damage * 10);
         }
         
 

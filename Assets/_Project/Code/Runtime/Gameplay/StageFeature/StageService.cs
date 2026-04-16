@@ -1,6 +1,8 @@
 ﻿using _Project.Code.Runtime.Configs.Level;
+using _Project.Code.Runtime.Utility.Reactive.Event;
 using _Project.Code.Runtime.Utility.Reactive.Variable;
 using System;
+using UnityEngine;
 
 namespace _Project.Code.Runtime.Gameplay.StageFeature
 {
@@ -8,7 +10,8 @@ namespace _Project.Code.Runtime.Gameplay.StageFeature
     {
         private readonly StagesFactory _stagesFactory;
         private readonly LevelConfig _levelConfig;
-        private ReactiveVariable<int> _stageIndex;
+        private readonly ReactiveVariable<int> _stageIndex;
+        private readonly ReactiveEvent _stageStarted = new();
         
         public StageService(StagesFactory stagesFactory, LevelConfig levelConfig)
         {
@@ -20,6 +23,7 @@ namespace _Project.Code.Runtime.Gameplay.StageFeature
 
         public IStage Stage { get; private set; }
         public IReadOnlyReactiveVariable<bool> IsCompleate => Stage.IsCompleate;
+        public IReadOnlyReactiveEvent StageStarted => _stageStarted;
 
         public bool HasNextStage()
         {
@@ -41,6 +45,8 @@ namespace _Project.Code.Runtime.Gameplay.StageFeature
             
             Stage = CreateStage();
             Stage.Start();
+            
+            _stageStarted.Invoke();
             
             _stageIndex.Value++;
         }
