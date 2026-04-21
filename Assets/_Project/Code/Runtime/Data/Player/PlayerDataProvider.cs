@@ -18,11 +18,12 @@ namespace _Project.Code.Runtime.Data.Player
                 WalletData = new Dictionary<CurrencyType, int>()
                 {
                     {CurrencyType.Soft, 100},
-                    {CurrencyType.Hard, 50},
+                    {CurrencyType.Hard, 200},
                 },
                 
                 WinCount = 0,
                 LoseCount = 0,
+                PurchasedItemsIds = new List<string>()
             };
         }
     }

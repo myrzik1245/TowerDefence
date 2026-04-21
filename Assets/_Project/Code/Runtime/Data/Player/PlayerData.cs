@@ -9,5 +9,6 @@ namespace _Project.Code.Runtime.Data.Player
         public Dictionary<CurrencyType, int> WalletData;
         public int WinCount;
         public int LoseCount;
+        public List<string> PurchasedItemsIds;
     }
 }

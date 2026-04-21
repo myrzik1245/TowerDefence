@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f736ea4c6a84674adbd24aa75194b69, type: 3}
   m_Name: DamageEnemyAbilityConfig
   m_EditorClassIdentifier: 
-  <ID>k__BackingField: 
-  <Event>k__BackingField: 0
+  <ID>k__BackingField: damageEnemy
+  <Event>k__BackingField: 1
+  <ShopItemConfig>k__BackingField: {fileID: 11400000, guid: cf48fdaf9da9ca34ca46cb6ae0732f8e,
+    type: 2}
   <Modifier>k__BackingField:
-    _operation: 0
-    _value: 0
-  <Count>k__BackingField: 0
+    _operation: 3
+    _value: 50
+  <Count>k__BackingField: 6

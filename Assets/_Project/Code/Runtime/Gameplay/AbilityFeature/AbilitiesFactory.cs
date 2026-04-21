@@ -3,6 +3,7 @@ using _Project.Code.Runtime.Gameplay.AbilityFeature.Abilities;
 using _Project.Code.Runtime.Gameplay.Enemy;
 using _Project.Code.Runtime.Gameplay.HealthFeature;
 using _Project.Code.Runtime.Gameplay.StatsFeature;
+using System;
 
 namespace _Project.Code.Runtime.Gameplay.AbilityFeature
 {
@@ -17,6 +18,25 @@ namespace _Project.Code.Runtime.Gameplay.AbilityFeature
             _enemiesFactory = enemiesFactory;
         }
 
+        public IAbility CreateAbility(AbilityConfig config, IStatsChangeable statsChangeable, IHealable healable, IReadOnlyHealth health)
+        {
+            switch (config)
+            {
+                case ChangeStatAbilityConfig changeStatAbilityConfig:
+                    return CreateChangeStatsAbility(statsChangeable, changeStatAbilityConfig);
+
+                case DamageEnemyAbilityConfig damageEnemyAbilityConfig:
+                    return CreateDamageEnemyAbility(damageEnemyAbilityConfig);
+                    
+                case HealAbilityConfig healAbilityConfig:
+                    return CreateHealAbility(healable, health, healAbilityConfig);
+                    
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(config));
+
+            }
+        }
+        
         public ChangeStatAbility CreateChangeStatsAbility(IStatsChangeable statsChangeable, ChangeStatAbilityConfig config)
         {
             ChangeStatAbility ability = new(

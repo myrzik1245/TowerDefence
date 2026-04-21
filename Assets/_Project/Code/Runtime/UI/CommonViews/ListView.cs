@@ -9,6 +9,8 @@ namespace _Project.Code.Runtime.UI.CommonViews
         [SerializeField] private Transform _parent;
 
         private List<TView> _elements = new();
+        
+        public IReadOnlyList<TView> Elements => _elements;
 
         public void Add(TView viewElement)
         {

@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <ID>k__BackingField: damage
   <Event>k__BackingField: 1
+  <ShopItemConfig>k__BackingField: {fileID: 11400000, guid: 1bb58b9fc96c4cf449b09b9cc37ab05f,
+    type: 2}
   <StatType>k__BackingField: 3
   <Modifier>k__BackingField:
     _operation: 3

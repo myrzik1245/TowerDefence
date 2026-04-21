@@ -16,18 +16,19 @@ namespace _Project.Code.Runtime.Utility.ConfigManagment.Loaders
     public class ResourcesConfigLoader : IConfigLoader
     {
         private readonly ResourcesAssetsLoader _resourcesAssetsLoader;
-        private readonly Dictionary<Type, string> _pathsMap = new Dictionary<Type, string>()
+        private readonly Dictionary<Type, string> _pathsMap = new()
         {
             { typeof(TowerConfig), "Configs/Characters/Tower/TowerConfig" },
             { typeof(BomberConfig), "Configs/Characters/Bomber/BomberConfig" },
             { typeof(LevelsConfig), "Configs/Levels/LevelsConfig" },
             { typeof(MineConfig), "Configs/DefenceObjects/Mine/MineConfig" },
-            { typeof(DefenceObjectShopConfig), "Configs/Shop/ShopConfig" },
+            { typeof(DefenceObjectShopConfig), "Configs/Shop/DefenceShopConfig" },
             { typeof(BonusConfig), "Configs/Bonus/BonusConfig" },
             { typeof(WalletConfig), "Configs/Wallet/WalletConfig" },
             { typeof(TurretConfig), "Configs/DefenceObjects/Turret/TurretConfig" },
             { typeof(PuddleConfig), "Configs/DefenceObjects/Puddle/PuddleConfig" },
             { typeof(AbilityContainer), "Configs/Ability/AbilityContainer" },
+            { typeof(ShopConfig), "Configs/Shop/ShopConfig" },
         };
 
         public ResourcesConfigLoader(ResourcesAssetsLoader resourcesAssetsLoader)

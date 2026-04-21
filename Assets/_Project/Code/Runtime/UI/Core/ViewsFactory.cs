@@ -22,6 +22,8 @@ namespace _Project.Code.Runtime.UI.Core
             { ViewIDs.Wallet, "UI/Wallet/WalletView" },
             { ViewIDs.DefenceObjectsSelectorSlot, "UI/Popups/DefenceObjectsSelectorSlot" },
             { ViewIDs.DefenceObjectsSelectorPopup, "UI/Popups/DefenceObjectsSelectorPopup" },
+            { ViewIDs.ShopPopup, "UI/Popups/Shop/ShopPopup" },
+            { ViewIDs.ShopSlotView, "UI/Popups/Shop/ShopSlotView" },
         };
 
         public ViewsFactory(DIContainer container)

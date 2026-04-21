@@ -11,5 +11,7 @@
         public const string Wallet = nameof(Wallet);
         public const string DefenceObjectsSelectorSlot = nameof(DefenceObjectsSelectorSlot);
         public const string DefenceObjectsSelectorPopup = nameof(DefenceObjectsSelectorPopup);
+        public const string ShopPopup = nameof(ShopPopup);
+        public const string ShopSlotView = nameof(ShopSlotView);
     }
 }

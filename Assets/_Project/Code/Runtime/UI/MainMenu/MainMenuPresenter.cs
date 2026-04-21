@@ -14,23 +14,26 @@ namespace _Project.Code.Runtime.UI.MainMenu
         private readonly MainMenuView _view;
         private readonly MainMenuPresentersFactory _mainMenuPresentersFactory;
         private readonly ProjectPresentersFactory _projectPresentersFactory;
+        private readonly MainMenuPopupService _mainMenuPopupService;
 
-        private IDisposable _playButtonSubscription;
+        private List<IDisposable> _disposables = new();
         
         private List<IPresenter> _presenters = new();
 
-        public MainMenuPresenter(LoadSceneService loadSceneService, ICoroutinePerformer coroutinePerformer, MainMenuView view, MainMenuPresentersFactory mainMenuPresentersFactory, ProjectPresentersFactory projectPresentersFactory)
+        public MainMenuPresenter(LoadSceneService loadSceneService, ICoroutinePerformer coroutinePerformer, MainMenuView view, MainMenuPresentersFactory mainMenuPresentersFactory, ProjectPresentersFactory projectPresentersFactory, MainMenuPopupService mainMenuPopupService)
         {
             _loadSceneService = loadSceneService;
             _coroutinePerformer = coroutinePerformer;
             _view = view;
             _mainMenuPresentersFactory = mainMenuPresentersFactory;
             _projectPresentersFactory = projectPresentersFactory;
+            _mainMenuPopupService = mainMenuPopupService;
         }
 
         public void Initialize()
         {
-            _playButtonSubscription = _view.PlayButtonClicked.Subscribe(OnPlayButtonClicked);
+            _disposables.Add(_view.PlayButtonClicked.Subscribe(OnPlayButtonClicked));
+            _disposables.Add(_view.ShopButtonClicked.Subscribe(OnShopButtonClicked));
             
             _presenters.Add(_mainMenuPresentersFactory.CreateWinLoseCounter(_view.WinLoseView));
             _presenters.Add(_projectPresentersFactory.CreateWalletPresenter(_view.WalletView));
@@ -41,7 +44,8 @@ namespace _Project.Code.Runtime.UI.MainMenu
 
         public void Dispose()
         {
-            _playButtonSubscription?.Dispose();
+            foreach (IDisposable disposable in _disposables)
+                disposable.Dispose();
             
             foreach (IPresenter presenter in _presenters)
                 presenter.Dispose();
@@ -49,6 +53,11 @@ namespace _Project.Code.Runtime.UI.MainMenu
             _presenters.Clear();
         }
 
+        private void OnShopButtonClicked()
+        {
+            _mainMenuPopupService.OpenShopPopup("Abilities shop");
+        }
+        
         private void OnPlayButtonClicked()
         {
             _coroutinePerformer.StartPerform(

@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <ID>k__BackingField: heal
   <Event>k__BackingField: 1
+  <ShopItemConfig>k__BackingField: {fileID: 11400000, guid: 4a077433b99bfd247aecf841cc769caf,
+    type: 2}
   <Modifier>k__BackingField:
     _operation: 3
     _value: 100

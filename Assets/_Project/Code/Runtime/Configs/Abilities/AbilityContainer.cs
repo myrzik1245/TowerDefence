@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace _Project.Code.Runtime.Configs.Abilities
@@ -7,6 +8,8 @@ namespace _Project.Code.Runtime.Configs.Abilities
     public class AbilityContainer : ScriptableObject
     {
         [SerializeField] private AbilityConfig[] _abilities;
+        
+        public IReadOnlyCollection<AbilityConfig> Abilities => _abilities;
         
         public TConfig GetConfigById<TConfig>(string id) where TConfig : AbilityConfig
         {

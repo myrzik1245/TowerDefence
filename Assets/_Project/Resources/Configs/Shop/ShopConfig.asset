@@ -9,19 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0af512dad36f4a019467af57b52d085d, type: 3}
+  m_Script: {fileID: 11500000, guid: 60df7d53ddd84e1baa536d93369b9c72, type: 3}
   m_Name: ShopConfig
   m_EditorClassIdentifier: 
   _items:
-  - <Type>k__BackingField: 0
-    <Price>k__BackingField: 10
-    <Icon>k__BackingField: {fileID: 21300098, guid: 1eaee135ce037439d925cee5e41ce026,
-      type: 3}
-  - <Type>k__BackingField: 1
-    <Price>k__BackingField: 20
-    <Icon>k__BackingField: {fileID: 10913, guid: 0000000000000000f000000000000000,
-      type: 0}
-  - <Type>k__BackingField: 2
-    <Price>k__BackingField: 50
-    <Icon>k__BackingField: {fileID: 21300100, guid: 1eaee135ce037439d925cee5e41ce026,
-      type: 3}
+  - {fileID: 11400000, guid: 4a077433b99bfd247aecf841cc769caf, type: 2}
+  - {fileID: 11400000, guid: 1bb58b9fc96c4cf449b09b9cc37ab05f, type: 2}
+  - {fileID: 11400000, guid: cf48fdaf9da9ca34ca46cb6ae0732f8e, type: 2}
